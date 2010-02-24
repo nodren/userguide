@@ -12,6 +12,16 @@
 </head>
 <body>
 
+<div id="topline">
+	<ul id="quicklinks">
+		<li class="first"><?php echo HTML::anchor('http://kohanaframework.org', '&nbsp;') ?></li>
+		<li class="active"><?php echo HTML::anchor('/en/userguide', 'User Guide') ?></li>
+		<li><?php echo HTML::anchor('http://forum.kohanaframework.org', 'Forums') ?></li>
+		<li><?php echo HTML::anchor('http://dev.kohanaframework.org', 'Development') ?></li>
+		<li><?php echo HTML::anchor('http://www.kohanajobs.com', 'Kohana Jobs') ?></li>
+	</ul>
+</div>
+
 <div id="topbar">
 	<div class="container">
 		<div class="span-17 suffix-1">
@@ -38,7 +48,6 @@
 	<div id="menu" class="span-6 last">
 		<?php echo $menu ?>
 		<?php if (isset($module_menus) AND ! empty($module_menus)) : ?>
-			<h3>Modules</h3>
 			<?php echo implode("\n", $module_menus) ?>
 		<?php endif; ?>
 	</div>

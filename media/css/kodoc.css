@@ -1,5 +1,5 @@
 html { margin: 0; }
-body { margin: 0; }
+body { margin: 0; background: #fff; }
 pre { background: #efefef; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
 table th { color: #444; background: #eee; }
 table td { background: #f4f4f4; }
@@ -7,24 +7,32 @@ table td { background: #f4f4f4; }
 
 .container .toggle { font-size: 0.7em; float: right; padding: 0 1em; cursor: pointer; color: #777; text-decoration: none; }
 
-#topbar { padding: 1em 0; margin-bottom: 2em; background: #111; border-bottom: solid 0.2 #eee; color: #ccc; }
+#topbar { padding: 1em 0 .8em; margin: 1em 0 2em; color: #000000; background: #eee; }
 	#topbar ul.breadcrumb { display: block; margin: 0; padding: 0; overflow: auto; }
-		#topbar ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.6em; }
-		#topbar ul.breadcrumb li:before { content: '» '; color: #888; }
-			#topbar ul.breadcrumb li a { color: #ccc; text-decoration: underline; }
+		#topbar ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.5em; }
+		#topbar ul.breadcrumb li:before { content: '» '; color: #666666; }
+			#topbar ul.breadcrumb li a { color: #333; text-decoration: underline; }
+				#topbar ul.breadcrumb li a:hover { color:#666; }
 	#topbar form { margin: 0 1em; padding: 0; }
 		#topbar form select { width: 98%; }
 
-#menu { background: #eee; }
+#menu { background: #eee; margin-top:-1em;}
+
+	#menu h2 { font-size: 1.3em; margin: 0; padding: .8em .7em .4em; background:white; }
+	#menu h3 { font-size: 1.1em; margin: 0; padding: .6em .8em .4em; border-top:1em solid white; background:#ddd; }
+	
 	#menu ol,
 	#menu ul { margin: 0; padding: 0; list-style: none; }
-		#menu li { margin: 0; padding: 0; }
-			#menu li { display: block; }
-			#menu li strong { display: block; margin-bottom: 0.4em; padding: 0.2em 0.4em; font-weight: normal; color: #eee; background: #111; cursor: pointer; }
-		#menu ol ul { margin-left: 1em; }
-	#menu ol { padding: 1em; }
-		#menu ol ul { padding-bottom: 0.6em; }
-	#menu h3 { font-size: 1em; margin: 0; padding: 1em 1em 0; border-top: 5px solid #fff; }
+	/* Lists that don't have section headers */
+	#menu ul { margin:1em; }
+	/* Lists that have section headers */
+	#menu ol { margin: 1em; background: #eee; }
+		#menu ol ul { margin:0; padding:0; margin-bottom: 0.6em; margin-left: 1em; }
+	
+	/* Section Headers */
+	#menu li strong { display: block; margin-bottom: 0.4em; padding: 0.2em 0.4em; font-weight: normal; color: #eee; background: #111; cursor: pointer; }
+	/* List Items */
+	#menu li { margin: 0; padding: 0; display:block; }
 
 #footer { margin-top: 1em; padding: 1em 0; color: #666; }
 	#footer p { font-size: 0.8em; text-transform: uppercase; }
@@ -59,3 +67,59 @@ table td { background: #f4f4f4; }
 #content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
 	#content dl.tags dt { margin: 0 0 0.4em; clear: both; float: left; width: 25%; }
 	#content dl.tags dd { margin: 0; padding: 0; clear: right; float: right; }
+	
+#topline {
+	position:relative;
+	width: 100%;
+	min-width:950px;
+	height:25px;
+	margin:0;
+	padding:0;
+	overflow: hidden;
+	background-color: #00262f;
+	color: #F1F8DB;
+	text-align:center;
+}
+	#topline #quicklinks {
+		position:relative;
+		float:left; /* float:left makes the width of this element the width of its contents */
+		left:50%; /* left side of this element will be half way across the page */
+		margin:0;
+		padding:0;
+		list-style-type:none;
+	}
+		#topline #quicklinks li {
+			position:relative;
+			float:left;
+			left:-50%; /* Move these elements to the left by 50% of the ul's width */
+			margin:0;
+			padding:6px 10px 6px 11px;
+			background:transparent url('../img/topline-divider.png') center left no-repeat;
+		}
+			#topline #quicklinks li a {
+				padding:0;
+				margin:0;
+				float:left;
+				color:#F1F8DB;
+				font-weight:bold;
+				text-decoration: none;
+				height:13px;
+				font-size:13px; /* I know using px is bad form, but this is just so its consistent wherever its used, it also means this bar won't resize in old browsers, which is actually kinda nice */
+			}
+		/* Kohana logo in the top bar */
+		#topline #quicklinks li.first {
+			padding-top:7px;
+			padding-bottom:5px;
+			background:none;
+		}
+			#topline #quicklinks li.first a { width:59px; height:13px; background: transparent url('../img/kohana-small.png') 0 0 no-repeat; }
+			#topline #quicklinks li.first.active a,
+			#topline #quicklinks li.first a:hover { background: transparent url('../img/kohana-small-active.png') 0 0 no-repeat; }
+
+		#topline #quicklinks li.active a {
+			color:#ED900E;
+		}
+
+			#topline #quicklinks li a:hover {
+				color:#ED900E;
+			}
