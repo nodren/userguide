@@ -7,10 +7,10 @@ $(document).ready(function()
 	});
 
 	// Striped tables
-	$('#content tbody tr:even').addClass('alt');
+	$('#kodoc-content tbody tr:even').addClass('alt');
 
 	// Toggle menus
-	$('#menu ol > li').each(function()
+	$('#kodoc-menu ol > li').each(function()
 	{
 		var link = $(this).find('strong');
 		var menu = $(this).find('ul');
@@ -34,19 +34,21 @@ $(document).ready(function()
 		{
 			// Currently active menu
 			link.toggle(close, open);
+			link.addClass('active');
 		}
 		else
 		{
 			menu.slideUp(0);
 			link.toggle(open, close);
+			link.removeClass('active');
 		}
 	});
 
 	// Collapsable class contents
-	$('#content #toc').each(function()
+	$('#kodoc-content #toc').each(function()
 	{
 		var header  = $(this);
-		var content = $('#content div.toc').hide();
+		var content = $('#kodoc-content div.toc').hide();
 
 		$('<span class="toggle">[ + ]</span>').toggle(function()
 		{

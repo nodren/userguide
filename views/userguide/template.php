@@ -22,34 +22,55 @@
 	</ul>
 </div>
 
-<div class="header">
-	<div id="topbar">
-		<div class="container">
-			<div class="span-17 suffix-1">
-				<ul class="breadcrumb">
-				<?php foreach ($breadcrumb as $link => $title): ?>
-					<li><?php echo is_int($link) ? $title : HTML::anchor($link, $title) ?></li>
-				<?php endforeach ?>
-				</ul>
-			</div>
-	
-			<div class="translations span-6 last">
-				<?php echo form::open(NULL, array('method' => 'get')) ?>
-					<?php echo form::select('lang', $translations, I18n::$lang) ?>
-				<?php echo form::close() ?>
-			</div>
+<div id="header">
+	<div class="container">
+		<?php echo HTML::anchor('/', HTML::image('media/img/kohana.png', array('alt' => 'Kohana: Develop Swiftly')), array('id' => 'logo')) ?>
+		<div id="menu">
+			<ul>
+				<?php
+				$select = '';
+				?>
+				<li class="first<?php echo $select == 'home'?' selected':''?>"><?php echo HTML::anchor('/','User Guide') ?></li>
+				<li class="last<?php echo $select == 'development'?' selected':''?>"><?php echo HTML::anchor('/api','Reference') ?></li>
+			</ul>
 		</div>
+<?php /*
+		<div class="translations span-6 last">
+			<?php echo form::open(NULL, array('method' => 'get')) ?>
+				<?php echo form::select('lang', $translations, I18n::$lang) ?>
+			<?php echo form::close() ?>
+		</div>
+		
+		<?php if (count(Kohana::config('kohana')->languages) > 1): ?>
+		<div id="languages">
+			<ul>
+				<?php
+				foreach (Kohana::config('kohana')->languages as $lang => $inf)
+				{
+					$active = ($lang == $request->param('lang'))?' class="active"':'';
+					echo '<li'.$active.'>'.HTML::anchor(Route::get('page')->uri(array('lang'=>$lang, 'action'=>$request->action)), HTML::image('media/img/flags/'.$inf['flag'].'.png',array('alt'=>$inf['name'], 'title'=>$inf['name']))).'</li>';
+				}
+				?>
+			</ul>
+		</div>
+		<?php endif; ?>
+*/ ?>
 	</div>
 </div>
 
-<div class="content">
+<div id="content">
 	<div class="wrapper">
 		<div id="docs" class="container">
-			<div id="content" class="span-16 prefix-1 suffix-1 colborder">
+			<ul class="breadcrumb">
+			<?php foreach ($breadcrumb as $link => $title): ?>
+				<li><?php echo is_int($link) ? $title : HTML::anchor($link, $title) ?></li>
+			<?php endforeach ?>
+			</ul>
+			<div id="kodoc-content">
 				<?php echo $content ?>
 			</div>
 		
-			<div id="menu" class="span-5 suffix-1 last">
+			<div id="kodoc-menu">
 				<?php echo $menu ?>
 				<?php if (isset($module_menus) AND ! empty($module_menus)) : ?>
 					<?php echo implode("\n", $module_menus) ?>
