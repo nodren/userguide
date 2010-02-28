@@ -22,43 +22,51 @@
 	</ul>
 </div>
 
-<div id="topbar">
+<div class="header">
+	<div id="topbar">
+		<div class="container">
+			<div class="span-17 suffix-1">
+				<ul class="breadcrumb">
+				<?php foreach ($breadcrumb as $link => $title): ?>
+					<li><?php echo is_int($link) ? $title : HTML::anchor($link, $title) ?></li>
+				<?php endforeach ?>
+				</ul>
+			</div>
+	
+			<div class="translations span-6 last">
+				<?php echo form::open(NULL, array('method' => 'get')) ?>
+					<?php echo form::select('lang', $translations, I18n::$lang) ?>
+				<?php echo form::close() ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="content">
+	<div class="wrapper">
+		<div id="docs" class="container">
+			<div id="content" class="span-16 prefix-1 suffix-1 colborder">
+				<?php echo $content ?>
+			</div>
+		
+			<div id="menu" class="span-5 suffix-1 last">
+				<?php echo $menu ?>
+				<?php if (isset($module_menus) AND ! empty($module_menus)) : ?>
+					<?php echo implode("\n", $module_menus) ?>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="footer">
 	<div class="container">
 		<div class="span-17 suffix-1">
-			<ul class="breadcrumb">
-			<?php foreach ($breadcrumb as $link => $title): ?>
-				<li><?php echo is_int($link) ? $title : HTML::anchor($link, $title) ?></li>
-			<?php endforeach ?>
-			</ul>
+			<p class="copyright">&copy; 2008-2009 Kohana Team</p>
 		</div>
-
-		<div class="translations span-6 last">
-			<?php echo form::open(NULL, array('method' => 'get')) ?>
-				<?php echo form::select('lang', $translations, I18n::$lang) ?>
-			<?php echo form::close() ?>
+		<div class="span-6 last">
+			<p class="powered">Powered by <?php echo HTML::anchor('http://kohanaphp.com/', 'Kohana') ?> v<?php echo Kohana::VERSION ?></p>
 		</div>
-	</div>
-</div>
-
-<div id="docs" class="container">
-	<div id="content" class="span-17 suffix-1 colborder">
-		<?php echo $content ?>
-	</div>
-
-	<div id="menu" class="span-6 last">
-		<?php echo $menu ?>
-		<?php if (isset($module_menus) AND ! empty($module_menus)) : ?>
-			<?php echo implode("\n", $module_menus) ?>
-		<?php endif; ?>
-	</div>
-</div>
-
-<div id="footer" class="container">
-	<div class="span-17 suffix-1">
-		<p class="copyright">&copy; 2008-2009 Kohana Team</p>
-	</div>
-	<div class="span-6 last">
-		<p class="powered">Powered by <?php echo HTML::anchor('http://kohanaphp.com/', 'Kohana') ?> v<?php echo Kohana::VERSION ?></p>
 	</div>
 </div>
 

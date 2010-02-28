@@ -89,7 +89,6 @@ class Kohana_Kodoc_Markdown extends MarkdownExtra_Parser {
 			// Add the base url to the link URL
 			$matches[2] = Kodoc_Markdown::$base_url.$matches[2];
 		}
-
 		// Recreate the link
 		return "[{$matches[1]}]({$matches[2]})";
 	}

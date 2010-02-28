@@ -20,12 +20,14 @@ $(document).ready(function()
 		{
 			// togg.html('[ &ndash; ]');
 			menu.stop().slideDown();
+			link.addClass('active');
 		};
 
 		var close = function()
 		{
 			// togg.html('[ + ]');
 			menu.stop().slideUp();
+			link.removeClass('active');
 		};
 
 		if (menu.find('a[href="'+ window.location.pathname +'"]').length)

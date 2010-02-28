@@ -1,13 +1,25 @@
 html { margin: 0; }
 body { margin: 0; background: #fff; }
-pre { background: #efefef; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
-table th { color: #444; background: #eee; }
+pre { background: #E3EDC4; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
+table th { color: #444; background: #E3EDC4; }
 table td { background: #f4f4f4; }
 	table tr.alt td { background: #fff; }
 
 .container .toggle { font-size: 0.7em; float: right; padding: 0 1em; cursor: pointer; color: #777; text-decoration: none; }
 
-#topbar { padding: 1em 0 .8em; margin: 1em 0 2em; color: #000000; background: #eee; }
+.header {
+	clear:both;
+	padding:1em 0 2em;
+	background:#77c244 url('../img/header.png') center top repeat-x;
+}
+
+
+.content { background: #f1f8db url('../img/content.png') center top repeat-x; }
+	.content .wrapper { padding-top:20px; background: url('../img/content-container.png') center top no-repeat; }
+	.content .container { }
+
+
+#topbar { padding: 1em 0 .7em; color: #000000; background: #BAE08F; }
 	#topbar ul.breadcrumb { display: block; margin: 0; padding: 0; overflow: auto; }
 		#topbar ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.5em; }
 		#topbar ul.breadcrumb li:before { content: '» '; color: #666666; }
@@ -16,31 +28,32 @@ table td { background: #f4f4f4; }
 	#topbar form { margin: 0 1em; padding: 0; }
 		#topbar form select { width: 98%; }
 
-#menu { background: #eee; margin-top:-1em;}
+#menu { }
 
-	#menu h2 { font-size: 1.3em; margin: 0; padding: .8em .7em .4em; background:white; }
-	#menu h3 { font-size: 1.1em; margin: 0; padding: .6em .8em .4em; border-top:1em solid white; background:#ddd; }
+	#menu h2 { font-size: 1.3em; margin: 0; padding: .8em .7em .4em; }
+	#menu h3 { font-size: 1.4em; margin: 0; padding: .5em .8em .4em; background:#9CE251; color:#245B35; }
 	
 	#menu ol,
 	#menu ul { margin: 0; padding: 0; list-style: none; }
 	/* Lists that don't have section headers */
-	#menu ul { margin:1em; }
+	#menu ul { padding-left:1em; }
 	/* Lists that have section headers */
-	#menu ol { margin: 1em; background: #eee; }
-		#menu ol ul { margin:0; padding:0; margin-bottom: 0.6em; margin-left: 1em; }
+	#menu ol { padding-left: 1em; background: #E3EDC4; }
+		#menu ol ul { margin:0; padding:0; margin-bottom: 0.6em; padding-left: 1em; }
 	
 	/* Section Headers */
-	#menu li strong { display: block; margin-bottom: 0.4em; padding: 0.2em 0.4em; font-weight: normal; color: #eee; background: #111; cursor: pointer; }
+	#menu li strong { display: block; margin-bottom: 0.4em; padding: 0.2em 0; padding-left:14px; margin-left:-6px; font-weight: strong; color: #000; cursor: pointer; background:transparent url('../img/arrow.png') 0 7px no-repeat; }
+	#menu li strong.active { background-position: 0 -13px; }
 	/* List Items */
 	#menu li { margin: 0; padding: 0; display:block; }
 
-#footer { margin-top: 1em; padding: 1em 0; color: #666; }
+#footer { padding: 2em 0 1em; background:#00262F; color: #405C63; }
 	#footer p { font-size: 0.8em; text-transform: uppercase; }
 	#footer .copyright { text-align: right; }
 #content h1 { margin-top: 0; }
 #content h1,
 #content h2,
-#content h3 { margin-left: -20px; padding: 0.4em 20px; padding-right: 0; background: #eee; }
+#content h3 { margin-left: -20px; padding: 0.4em 20px; padding-right: 0; background: #E3EDC4; }
 #content h1 small,
 #content h2 small,
 #content h3 small,
@@ -54,17 +67,17 @@ table td { background: #f4f4f4; }
 #content div.class-list div.class.right { float: right; }
 	#content div.class-list div.class h2 { margin: 0.4em; padding: 0.2em 0.4em; font-size: 1em; }
 
-#content div.toc { margin-bottom: 1em; padding-bottom: 1em; background: #eee; }
+#content div.toc { margin-bottom: 1em; padding-bottom: 1em; background: #E3EDC4; }
 	#content div.toc ul { margin: 0.6em 1em; padding: 0; list-style: none; }
 		#content div.toc li { margin: 0; padding: 0; }
-	#content div.toc h3 { margin: 0; padding: 0.2em 1em; font-size: 1em; color: #eee; background: #111; }
+	#content div.toc h3 { margin: 0; padding: 0.2em 1em; font-size: 1em; color: #E3EDC4; background: #111; }
 #content div.method,
 #content div.properties,
 #content div.constants { margin-bottom: 1em; }
 	#content div.method h3 .param { font-weight: normal; cursor: help; }
 	#content div.method h3 abbr.param { text-transform: none; font-size: 1em; }
-#content p.note { display: block; padding: 0.4em 0.6em; background: #efefef; color: #444; font-size: 0.9em; border: solid 1px #eee; }
-#content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
+#content p.note { display: block; padding: 0.4em 0.6em; background: #E3EDC4; color: #444; font-size: 0.9em; border: solid 1px #E3EDC4; }
+#content dl.tags { overflow: auto; background: #E3EDC4; padding: 1em; border: solid 6px #ddd; }
 	#content dl.tags dt { margin: 0 0 0.4em; clear: both; float: left; width: 25%; }
 	#content dl.tags dd { margin: 0; padding: 0; clear: right; float: right; }
 	
@@ -114,7 +127,7 @@ table td { background: #f4f4f4; }
 		}
 			#topline #quicklinks li.first a { width:59px; height:13px; background: transparent url('../img/kohana-small.png') 0 0 no-repeat; }
 			#topline #quicklinks li.first.active a,
-			#topline #quicklinks li.first a:hover { background: transparent url('../img/kohana-small-active.png') 0 0 no-repeat; }
+			#topline #quicklinks li.first a:hover { background-position:0 -20px; }
 
 		#topline #quicklinks li.active a {
 			color:#ED900E;
