@@ -13,7 +13,7 @@ table td { background: #f4f4f4; }
 	background:#77c244 url('../img/header.png') center top repeat-x;
 }
 
-ul.breadcrumb { display: block; margin: 0; padding: 0 40px 1em; overflow: auto; }
+ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; }
 	ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.5em; }
 	ul.breadcrumb li:before { content: '» '; color: #666666; }
 		ul.breadcrumb li a { color: #333; text-decoration: underline; }
@@ -26,27 +26,29 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 40px 1em; overflow: auto; 
 	
 #kodoc-content {
 	border:1px solid #DDDDDD;
-	margin-left:40px;
+	margin-left:20px;
 	padding-left:19px;
-	margin-right:40px;
+	margin-right:20px;
 	padding-right:19px;
 	background:white;
 	margin-bottom:20px;
-	width:590px;
+	width:650px;
 	float:left;
 }
 	
-#kodoc-content h1 { margin-left: -19px;margin-right:-19px; padding: 0.4em 20px; margin-top: 0;  background: #eee;  color: #00262F; }
-#kodoc-content h2 { margin-left: -19px;margin-right:-19px; padding: 0.4em 20px; background: #eee; }
-#kodoc-content h3 { border-bottom:1px solid #ccc; }
-#kodoc-content h4 { }
+#kodoc-content h1 { margin-left: -19px;margin-right:-19px; padding: 0.4em 19px; margin-top: 0;  background: #9CE251;  color: #113C32; }
+#kodoc-content h2 { margin-left: -19px;margin-right:-19px; padding: 0.4em 19px; background: #E3EDC4; color:#245B35; }
+#kodoc-content h3 { margin-left:-10px; margin-right:-10px; padding: 0.4em 10px; background: #E3EDC4; color:#245B35; }
+#kodoc-content h4 { border-bottom:1px solid #ccc; }
 #kodoc-content h1 small,
 #kodoc-content h2 small,
 #kodoc-content h3 small,
 #kodoc-content h4 small,
 #kodoc-content h5 small,
 #kodoc-content h6 small { font-size: 0.9em; font-weight: normal; color: #444; }
-#kodoc-content pre { font-size: 1em; line-height: 1.4em; }
+#kodoc-content pre { font-size: 1em; line-height: 1.4em; border:1px dashed #24933B; background:#F7F7F7; padding:8px; }
+#kodoc-content pre,
+#kodoc-content code { color:#186027; }
 
 #kodoc-content div.class-list div.class { width: 50%; }
 #kodoc-content div.class-list div.class.left { float: left; clear: both; }
@@ -69,7 +71,9 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 40px 1em; overflow: auto; 
 	
 #kodoc-menu {
 	float:left;
-	width:200px;
+	width:198px;
+	margin-bottom:40px;
+	border:1px solid #DDDDDD;
 }
 
 	#kodoc-menu h3 { font-size: 1.4em; margin: 0; padding: .5em .8em .4em; background:#9CE251; color:#00262F; }
@@ -77,9 +81,9 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 40px 1em; overflow: auto; 
 	#kodoc-menu ol,
 	#kodoc-menu ul { margin: 0; padding: 0.6em 0; list-style: none; }
 	/* Lists that don't have section headers */
-	#kodoc-menu ul { padding-left:1em; background: #E3EDC4; }
+	#kodoc-menu ul { padding-left:1em; background: #FFFFFF; }
 	/* Lists that have section headers */
-	#kodoc-menu ol { padding-left: 1em; background: #E3EDC4; }
+	#kodoc-menu ol { padding-left: 1em; background: #FFFFFF; }
 		#kodoc-menu ol ul { margin:0; padding:0; margin-bottom: 0.6em; padding-left: 1em; }
 	
 	/* Section Headers */
