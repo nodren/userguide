@@ -83,39 +83,50 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; 
 	/* Menus */
 	#kodoc-menu ol,
 	#kodoc-menu ul,
-	#kodoc-menu ul or,
+	#kodoc-menu ol ol,
+	#kodoc-menu ul ul,
+	#kodoc-menu ul ol,
 	#kodoc-menu ol ul { margin:0; padding:0; list-style:none; }
+	
+	#kodoc-menu ol ol,
+	#kodoc-menu ul ul,
+	#kodoc-menu ul ol,
+	#kodoc-menu ol ul { margin-left:14px }
 	
 	/* Top level menus getting padding on top and bottom */
 	#kodoc-menu>ol,
 	#kodoc-menu>ul { padding-top: 0.6em; padding-bottom:0.6em; padding-left:3px; }
 	
 	/* List Items */
-	#kodoc-menu li { margin: 0; padding-left: 14px; display:block; position:relative; }
+	#kodoc-menu li { margin: 0; display:block; position:relative; }
 	
-
-	
-	/* Expandable section headers */
-	#kodoc-menu .section {
-		display: block;
-		padding: 0.2em 0;
-		font-weight: bold;
-		color: #00262F;
+	/* Links */
+	#kodoc-menu li a {
+		padding-left: 10px;
+		background:transparent url('../img/arrow.png') -40px 0 no-repeat;
 	}
 	
-	/* Section header toggle arrows */
-	#kodoc-menu .section .toggler {
+	/* Expandable section headers */
+	#kodoc-menu a.section {
+		display: block;
+		padding: 0.2em 0 0 14px;
+		font-weight: bold;
+		color: #00262F;
+		background-position: -20px -20px; 
+	}
+	
+	#kodoc-menu a.section-active {
+		background-position: 0 -40px;
+	}
+	
+	/* Toggle button */
+	#kodoc-menu a.section .toggler {
 		position:absolute;
 		top:0;
 		left:0;
 		width:14px;
 		height:19px;
-		background:transparent url('../img/arrow.png') 0 7px no-repeat;
 		cursor:pointer;
-	}
-	
-	#kodoc-menu .section-active .toggler {
-		background-position: 0 -13px;
 	}
 	
 #topline {

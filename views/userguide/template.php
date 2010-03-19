@@ -71,9 +71,7 @@
 			</div>
 		
 			<div id="kodoc-menu">
-				<?php if (isset($menu) AND ! empty($menu)) : ?>
-					<?php echo implode("\n", $menu) ?>
-				<?php endif; ?>
+				<?php echo $menu ?>
 			</div>
 		</div>
 	</div>

@@ -62,7 +62,7 @@ class Controller_Userguide extends Controller_Template {
 		parent::before();
 	}
 	
-	public function action_index()
+	public function index()
 	{
 		foreach(Kohana::config('userguide.userguide') as $module => $options)
 		{
@@ -73,30 +73,55 @@ class Controller_Userguide extends Controller_Template {
 		}
 		
 		$this->template->title = "Userguide";
-		$this->template->content = View::factory('userguide/index',array('modules'=>Kohana::config('userguide.userguide')));
 		$this->template->breadcrumb = array('User Guide');
+		$this->template->content = View::factory('userguide/index',array('modules'=>Kohana::config('userguide.userguide')));
+		$this->template->menu = View::factory('userguide/menu',array('modules'=>Kohana::config('userguide.userguide')));
+	}
+	
+	public function error($message)
+	{
+		$this->request->status = 404;
+		$this->template->title = "Userguide - Error";
+		$this->template->content = View::factory('userguide/error',array('message'=>$message));
 		
+		// If we are in a module and that module has a menu, show that, otherwise use the index page menu
+		if ($module = $this->request->param('module') AND $config = Kohana::config("userguide.userguide.$module"))
+		{
+			$menu = $this->file($config['menu']);
+			$this->template->menu = Markdown(file_get_contents($menu));
+			$this->template->breadcrumb = array(
+				$this->guide->uri() => 'User Guide',
+				$module => $config['name'],
+				'Error');
+		}
+		else
+		{
+			$this->template->menu = View::factory('userguide/menu',array('modules'=>Kohana::config('userguide.userguide')));
+			$this->template->breadcrumb = array($this->guide->uri() => 'User Guide','Error');
+		}
 	}
 
 	public function action_docs()
 	{
-		$page = $this->request->param('page');
+		$module = $this->request->param('module');
+		$page = $module.'/'.$this->request->param('page');
 		
-		// trim trailing slashes
-		$page = preg_replace('~/+$~','',$page);
+		// Trim trailing slashes, to ensure breadcrumbs work
+		$page = preg_replace('/\/+$/','',$page);
 
+		// If no module/page specified, show the index page, listing the modules
 		if ( ! $page)
 		{
-			// Show the index page
-			return $this->action_index();
+			return $this->index();
 		}
 
+		// Find the file for this page
 		$file = $this->file($page);
 
+		// If the file wasn't found, show the error page
 		if ( ! $file)
 		{
-			throw new Kohana_Exception('User guide page not found: :page',
-				array(':page' => $page));
+			return $this->error('User guide page not found.');
 		}
 
 		// Set the page title
@@ -105,19 +130,9 @@ class Controller_Userguide extends Controller_Template {
 		// Parse the page contents into the template
 		$this->template->content = Markdown(file_get_contents($file));
 		
-		// Bind menus
-		$this->template->bind('menu', $menu);
-		
-		// Attach module-specific menu items
-		$menu = array();
-		
-		foreach(Kohana::config('userguide.userguide') as $module => $options)
-		{
-			if ($file = Kohana::find_file('guide', $options['menu'], 'md'))
-			{
-				$menu[$module] = Markdown(file_get_contents($file)); 
-			}
-		}
+		// Find this modules menu file and send it to the template
+		$menu = $this->file(Kohana::config('userguide.userguide.'.$module.'.menu'));
+		$this->template->menu = Markdown(file_get_contents($menu));
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
