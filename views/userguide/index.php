@@ -1,5 +1,9 @@
 <h1>Kodoc</h1>
 
+<h3>API Reference</h3>
+<p><strong><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></strong> - A reference of all classes that are enabled.</p>
+
+<h3>Modules</h3>
 <p>The following modules have userguide pages:</p>
 
 <?php if( ! empty($modules)): ?>

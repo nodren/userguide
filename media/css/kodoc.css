@@ -62,7 +62,7 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; 
 #kodoc-content div.method,
 #kodoc-content div.properties,
 #kodoc-content div.constants { margin-bottom: 1em; }
-	#kodoc-content div.method h3 .param { font-weight: normal; cursor: help; }
+	#kodoc-content div.method h3 .param { font-weight: normal; cursor: help; border-bottom:1px dashed #666666;}
 	#kodoc-content div.method h3 abbr.param { text-transform: none; font-size: 1em; }
 #kodoc-content p.note { display: block; padding: 0.4em 0.6em; background: #eee; color: #444; font-size: 0.9em; border: solid 1px #eee; }
 #kodoc-content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
@@ -101,13 +101,13 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; 
 	#kodoc-menu li { margin: 0; display:block; position:relative; }
 	
 	/* Links */
-	#kodoc-menu li a {
+	#kodoc-menu li a, #kodoc-menu li strong {
 		padding-left: 10px;
 		background:transparent url('../img/arrow.png') -40px 0 no-repeat;
 	}
 	
 	/* Expandable section headers */
-	#kodoc-menu a.section {
+	#kodoc-menu .section {
 		display: block;
 		padding: 0.2em 0 0 14px;
 		font-weight: bold;
@@ -115,12 +115,12 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; 
 		background-position: -20px -20px; 
 	}
 	
-	#kodoc-menu a.section-active {
+	#kodoc-menu .section-active {
 		background-position: 0 -40px;
 	}
 	
 	/* Toggle button */
-	#kodoc-menu a.section .toggler {
+	#kodoc-menu .section .toggler {
 		position:absolute;
 		top:0;
 		left:0;

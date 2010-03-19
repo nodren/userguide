@@ -12,7 +12,7 @@ $(document).ready(function()
 	// Toggle sub menus
 	$('#kodoc-menu li:has(ul)').each(function()
 	{
-		var link = $(this).find('a:first');
+		var link = $(this).find(':first');
 		var menu = $(this).find('ul:first,ol:first');
 		
 		link.prepend('<div class="toggler"></div>');

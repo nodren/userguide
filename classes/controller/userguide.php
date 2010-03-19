@@ -2,7 +2,7 @@
 /**
  * Kohana user guide and api browser.
  *
- * @package    Userguide
+ * 
  * @author     Kohana Team
  */
 class Controller_Userguide extends Controller_Template {
@@ -187,7 +187,7 @@ class Controller_Userguide extends Controller_Template {
 		// Add the breadcrumb
 		$breadcrumb = array();
 		$breadcrumb[$this->guide->uri(array('page' => NULL))] = __('User Guide');
-		$breadcrumb[$this->request->route->uri()] = $this->title('api');
+		$breadcrumb[$this->request->route->uri()] = 'API Reference';
 		$breadcrumb[] = $this->template->title;
 	}
 

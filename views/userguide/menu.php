@@ -1,4 +1,8 @@
-<h3>Kodoc</h3>
+<h3>Api Reference</h3>
+<ul>
+	<li><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></li>
+</ul>
+<h3>Modules</h3>
 <?php if( ! empty($modules)): ?>
 
 	<ul>
