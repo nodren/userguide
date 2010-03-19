@@ -4,7 +4,7 @@
 	<ul>
 	<?php foreach($modules as $url => $module): ?>
 	
-		<li><?php echo html::anchor($url,$module['name']) ?></li>
+		<li><?php echo html::anchor(Route::get('docs/guide')->uri().'/'.$url,$module['name']) ?></li>
 	
 	<?php endforeach; ?>
 	</ul>

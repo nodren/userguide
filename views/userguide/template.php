@@ -24,7 +24,7 @@
 
 <div id="header">
 	<div class="container">
-		<?php echo HTML::anchor('/', HTML::image('media/img/kohana.png', array('alt' => 'Kohana: Develop Swiftly')), array('id' => 'logo')) ?>
+		<?php echo HTML::anchor('/', HTML::image(Route::get('docs/media')->uri(array('file'=>'/img/kohana.png')), array('alt' => 'Kohana: Develop Swiftly')), array('id' => 'logo')) ?>
 		<div id="menu">
 			<ul>
 				<?php

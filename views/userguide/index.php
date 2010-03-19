@@ -7,7 +7,7 @@
 	<?php foreach($modules as $url => $module): ?>
 	
 		<p>
-			<strong><?php echo html::anchor($url,$module['name']) ?></strong> - 
+			<strong><?php echo html::anchor(Route::get('docs/guide')->uri().'/'.$url,$module['name']) ?></strong> - 
 			<?php echo $module['desc'] ?>
 		</p>
 	
