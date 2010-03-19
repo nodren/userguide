@@ -62,22 +62,16 @@ class Controller_Userguide extends Controller_Template {
 		parent::before();
 	}
 	
+	// List all modules that have userguides
 	public function index()
 	{
-		foreach(Kohana::config('userguide.userguide') as $module => $options)
-		{
-			if ($file = Kohana::find_file('guide', $options['menu'], 'md'))
-			{
-				$module_menus[$module] = Markdown(file_get_contents($file)); 
-			}
-		}
-		
 		$this->template->title = "Userguide";
 		$this->template->breadcrumb = array('User Guide');
 		$this->template->content = View::factory('userguide/index',array('modules'=>Kohana::config('userguide.userguide')));
 		$this->template->menu = View::factory('userguide/menu',array('modules'=>Kohana::config('userguide.userguide')));
 	}
 	
+	// Display an error if a page isn't found
 	public function error($message)
 	{
 		$this->request->status = 404;
@@ -91,7 +85,7 @@ class Controller_Userguide extends Controller_Template {
 			$this->template->menu = Markdown(file_get_contents($menu));
 			$this->template->breadcrumb = array(
 				$this->guide->uri() => 'User Guide',
-				$module => $config['name'],
+				$this->guide->uri().'/'.$module => $config['name'],
 				'Error');
 		}
 		else
@@ -148,7 +142,7 @@ class Controller_Userguide extends Controller_Template {
 		$current = null;
 		while ($last !== $current = preg_replace('~/[^/]+$~','',$last))
 		{
-			$breadcrumb[$current] = $this->title($current);
+			$breadcrumb[$this->guide->uri().'/'.$current] = $this->title($current);
 			$last = $current;
 		}
 		
