@@ -102,7 +102,7 @@ ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; 
 	
 	/* Links */
 	#kodoc-menu li a, #kodoc-menu li strong {
-		padding-left: 10px;
+		padding-left: 14px;
 		background:transparent url('../img/arrow.png') -40px 0 no-repeat;
 	}
 	

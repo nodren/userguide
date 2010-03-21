@@ -1,4 +1,4 @@
-<h3>Api Reference</h3>
+<h3>API Reference</h3>
 <ul>
 	<li><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></li>
 </ul>
