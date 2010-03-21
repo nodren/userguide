@@ -249,7 +249,7 @@ class Controller_Userguide extends Controller_Template {
 
 			// Add scripts
 			$this->template->scripts = array(
-				'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
+				'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
 				$media->uri(array('file' => 'js/kodoc.js')),
 			);
 
