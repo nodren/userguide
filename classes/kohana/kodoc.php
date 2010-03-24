@@ -78,11 +78,9 @@ class Kohana_Kodoc {
 				// Just add this class to that category
 				$menu[$category][] = $link;
 			}
-
 		}
 
 		// Return the output of _menu_print()
-		ksort($menu);
 		return self::_menu_print($menu);
 	}
 	

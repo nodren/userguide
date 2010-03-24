@@ -23,6 +23,10 @@ class Controller_Userguide extends Controller_Template {
 		}
 		else
 		{
+			
+			// Disable eAccelerator, it messes with	the ReflectionClass->getDocComments() calls
+            ini_set('eaccelerator.enable',0);
+			
 			// Grab the necessary routes
 			$this->media = Route::get('docs/media');
 			$this->api   = Route::get('docs/api');
