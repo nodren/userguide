@@ -82,7 +82,7 @@ class Kohana_Kodoc {
 
 		// Return the output of _menu_print()
 		ksort($menu);
-		return self::_menu_print($menu);
+		return "<h3>API Browser</h3>\n".self::_menu_print($menu);
 	}
 	
 	protected static function _menu_print($list)
@@ -237,7 +237,15 @@ class Kohana_Kodoc {
 						}
 					break;
 					case 'throws':
-						$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $text)), $text);
+						if (preg_match('/^(\w+)\W(.*)$/',$text,$matches))
+						{
+							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $matches[1])), $matches[1]).' '.$matches[2];
+						}
+						else
+						{
+							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $text)), $text);
+						}
+						
 					break;
 					case 'uses':
 						if (preg_match('/^([a-z_]+)::([a-z_]+)$/i', $text, $matches))

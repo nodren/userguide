@@ -171,7 +171,7 @@ class Controller_Userguide extends Controller_Template {
 				->set('doc', $_class)
 				->set('route', $this->request->route);
 
-			$this->template->menu = "<h3>API Browser</h3>\n".Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
+			$this->template->menu = Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
 		}
 		else
 		{
@@ -253,7 +253,7 @@ class Controller_Userguide extends Controller_Template {
 				$media->uri(array('file' => 'css/print.css'))  => 'print',
 				$media->uri(array('file' => 'css/screen.css')) => 'screen',
 				$media->uri(array('file' => 'css/kodoc.css'))  => 'screen',
-				$media->uri(array('file' => 'css/kohanaphp.css')) => 'screen',
+				$media->uri(array('file' => 'css/topline.css')) => 'screen',
 			);
 
 			// Add scripts

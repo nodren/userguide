@@ -1,4 +1,4 @@
-<div>
+<div id="class-menu">
 	<h3 id="toc"><?php echo $doc->class->name ?></h3>
 
 	<h4>Constants</h4>

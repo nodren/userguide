@@ -5,6 +5,18 @@
 <?php echo $doc->description ?>
 </div>
 
+<!--
+<?php if ($doc->params): ?>
+<?php //echo kohana::debug($doc->params) ?>
+<h6>Parameters</h6>
+<ul class="params">
+<?php //foreach ($doc->params as $set): ?>
+<li><code><?php // echo kohana::debug($set) ?></code></li>
+<?php //endforeach ?>
+</ul>
+<?php endif ?>
+-->
+
 <?php if ($doc->return): ?>
 <h6>Returns:</h6>
 <ul class="return">
@@ -14,10 +26,11 @@
 </ul>
 <?php endif ?>
 
+<?php if ($doc->tags) echo View::factory('userguide/api/tags')->set('tags', $doc->tags) ?>
+
 <?php if ($doc->source): ?>
 <h6>Source:</h6>
 <pre><code><?php echo HTML::chars($doc->source) ?></code></pre>
 <?php endif ?>
 
-<?php if ($doc->tags) echo View::factory('userguide/api/tags')->set('tags', $doc->tags) ?>
 </div>
