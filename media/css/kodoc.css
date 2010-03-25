@@ -7,17 +7,11 @@ table td { background: #f4f4f4; }
 
 .container .toggle { font-size: 0.7em; float: right; padding: 0 1em; cursor: pointer; color: #777; text-decoration: none; }
 
-.header {
-	clear:both;
-	padding:1em 0 2em;
-	background:#77c244 url('../img/header.png') center top repeat-x;
-}
-
-ul.breadcrumb { display: block; margin: 0; padding: 0 20px 1em; overflow: auto; }
-	ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.5em; }
-	ul.breadcrumb li:before { content: '» '; color: #666666; }
-		ul.breadcrumb li a { color: #333; text-decoration: underline; }
-			ul.breadcrumb li a:hover { color:#666; }
+ul.breadcrumb { display: block; margin: 0; padding:.4em; overflow: auto; }
+	ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.4em; font-size:1.6em; font-weight:bold; }
+	ul.breadcrumb li:before { content: '» '; color: #595959; }
+		ul.breadcrumb li a { color: #00262F; text-decoration: underline; }
+			ul.breadcrumb li a:hover { color:#1F6D5B; }
 
 #footer { padding: 2em 0 1em; background:#00262F; color: #405C63; }
 	#footer p { font-size: 0.8em; text-transform: uppercase; }
