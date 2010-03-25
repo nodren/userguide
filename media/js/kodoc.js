@@ -9,7 +9,7 @@ $(document).ready(function()
 	// Striped tables
 	$('#kodoc-content tbody tr:even').addClass('alt');
 
-	// Toggle sub menus
+	// Collapsable categories
 	$('#kodoc-menu li:has(ul), #kodoc-menu li:has(ol)').each(function()
 	{
 		var link = $(this).find(':first');
@@ -44,25 +44,6 @@ $(document).ready(function()
 		}
 	});
 
-	// Collapsable class contents
-	$('#kodoc-content #toc').each(function()
-	{
-		var header  = $(this);
-		var content = $('#kodoc-content div.toc').hide();
-
-		$('<span class="toggle">[ + ]</span>').toggle(function()
-		{
-			$(this).html('[ &ndash; ]');
-			content.stop().slideDown();
-		},
-		function()
-		{
-			$(this).html('[ + ]');
-			content.stop().slideUp();
-		})
-		.appendTo(header);
-	});
-	
 	// "Link to" headers
 	$('#kodoc-content')
 		.find('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]').each(function(){
@@ -72,11 +53,33 @@ $(document).ready(function()
 	 
 	 I'm not exactly sure what I did that broke this code... but I've replaced it with the above code.  ~bluehawk
 	 
-	
 	$('#kodoc-content')
 		.children('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]')
 		.append(function(index, html){
 			return '<a href="#' + $(this).attr('id') + '" class="heading-link">Link to this</a>';
 		});
 	*/
+	
+	// Show source links
+	$('#kodoc-content .method-source').each(function(){
+		var link = $(this).find('h6');
+		var code = $(this).find('pre');
+		
+		var show = function()
+		{
+			code.slideDown();
+			link.html('<a href="#">Source: (hide)</a>');
+		};
+		
+		var hide = function()
+		{
+			code.slideUp();
+			link.html('<a href="#">Show Source:</a>');
+		};
+		
+		link.toggle(show,hide);
+		
+		code.hide();
+		link.html('<a href="#">Show Source:</a>');
+	});
 });

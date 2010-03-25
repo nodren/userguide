@@ -155,7 +155,7 @@ class Kohana_Kodoc {
 	 * This means any empty class files (as in complety empty) will cause an exception
 	 *
 	 * @param   array   array of files, obtained using Kohana::list_files
-	 * @retur   array   an array of all the class names
+	 * @return   array   an array of all the class names
 	 */
 	public static function classes(array $list = NULL)
 	{

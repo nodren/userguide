@@ -1,7 +1,8 @@
 <div class="method">
 <h3 id="<?php echo $doc->method->name ?>">
-	<?php echo $doc->modifiers, $doc->method->name, ' ( ', $doc->params, ' )'  ?>
-	<?php echo '<small>declared by '.$doc->method->getDeclaringClass()->getName().'</small>' ?>
+	<?php
+	echo $doc->modifiers, $doc->method->name, ' ( ', $doc->params, ' ) ' ,
+	'<small>declared by '.html::anchor($route->uri(array('class'=>$doc->method->getDeclaringClass()->getName())),$doc->method->getDeclaringClass()->getName()).'</small>' ?>
 </h3>
 
 <div class="description">
@@ -32,8 +33,10 @@
 <?php if ($doc->tags) echo View::factory('userguide/api/tags')->set('tags', $doc->tags) ?>
 
 <?php if ($doc->source): ?>
-<h6>Source:</h6>
+<div class="method-source">
+<h6>Source Code:</h6>
 <pre><code><?php echo HTML::chars($doc->source) ?></code></pre>
+</div>
 <?php endif ?>
 
 </div>
