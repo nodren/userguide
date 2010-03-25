@@ -171,7 +171,7 @@ class Controller_Userguide extends Controller_Template {
 				->set('doc', $_class)
 				->set('route', $this->request->route);
 
-			$this->template->menu = Kodoc::menu() . View::factory('userguide/api/menu',array('doc'=>$_class));
+			$this->template->menu = "<h3>API Browser</h3>\n".Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
 		}
 		else
 		{
@@ -258,7 +258,7 @@ class Controller_Userguide extends Controller_Template {
 
 			// Add scripts
 			$this->template->scripts = array(
-				'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js',
+				$media->uri(array('file' => 'js/jquery-1.3.2.min.js')),
 				$media->uri(array('file' => 'js/kodoc.js')),
 			);
 

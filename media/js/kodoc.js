@@ -65,8 +65,18 @@ $(document).ready(function()
 	
 	// "Link to" headers
 	$('#kodoc-content')
+		.find('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]').each(function(){
+			$(this).append('<a href="#' + $(this).attr('id') + '" class="heading-link">Link to this</a>');
+		});
+	/*
+	 
+	 I'm not exactly sure what I did that broke this code... but I've replaced it with the above code.  ~bluehawk
+	 
+	
+	$('#kodoc-content')
 		.children('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]')
 		.append(function(index, html){
 			return '<a href="#' + $(this).attr('id') + '" class="heading-link">Link to this</a>';
 		});
+	*/
 });
