@@ -81,6 +81,7 @@ class Kohana_Kodoc {
 		}
 
 		// Return the output of _menu_print()
+		ksort($menu);
 		return self::_menu_print($menu);
 	}
 	
@@ -244,11 +245,6 @@ class Kohana_Kodoc {
 							// Make a class#method API link
 							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $matches[1])).'#'.$matches[2], $text);
 						}
-					break;
-					// skip this item, go to the next in the for loop
-					case 'ignore':
-						continue 2;
-					
 					break;
 				}
 
