@@ -1,7 +1,7 @@
 html { margin: 0; }
 body { margin: 0; background: #F1F8DB; }
 pre { background: #eee; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
-table th { color: #444; background: #eee; }
+table th { color: #333; background: #e8e8e8; }
 table td { background: #f4f4f4; }
 	table tr.alt td { background: #fff; }
 
@@ -88,6 +88,7 @@ table td { background: #f4f4f4; }
 #kodoc-content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
 	#kodoc-content dl.tags dt { margin: 0 0 0.4em; clear: both; float: left; width: 25%; }
 	#kodoc-content dl.tags dd { margin: 0; padding: 0; clear: right; float: right; }
+
 	
 #kodoc-menu {
 	float:left;

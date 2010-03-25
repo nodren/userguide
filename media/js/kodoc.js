@@ -7,7 +7,7 @@ $(document).ready(function()
 	});
 
 	// Striped tables
-	$('#kodoc-content tbody tr:even').addClass('alt');
+	$('#kodoc-content tbody tr:odd').addClass('alt');
 
 	// Collapsable categories
 	$('#kodoc-menu li:has(ul), #kodoc-menu li:has(ol)').each(function()
@@ -62,24 +62,24 @@ $(document).ready(function()
 	
 	// Show source links
 	$('#kodoc-content .method-source').each(function(){
-		var link = $(this).find('h6');
+		$(this).find('h5').each(function(){ $(this).append(' <a class="toggler" href="#">[show]</a>') });
+		var link = $(this).find('.toggler');
 		var code = $(this).find('pre');
 		
 		var show = function()
 		{
 			code.slideDown();
-			link.html('<a href="#">Source: (hide)</a>');
+			link.html('[hide]');
 		};
 		
 		var hide = function()
 		{
 			code.slideUp();
-			link.html('<a href="#">Show Source:</a>');
+			link.html('[show]');
 		};
 		
 		link.toggle(show,hide);
 		
 		code.hide();
-		link.html('<a href="#">Show Source:</a>');
 	});
 });

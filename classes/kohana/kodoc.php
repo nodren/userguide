@@ -282,7 +282,6 @@ class Kohana_Kodoc {
 						{
 							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $text)), $text);
 						}
-						
 					break;
 					case 'uses':
 						if (preg_match('/^([a-z_]+)::([a-z_]+)$/i', $text, $matches))
@@ -291,6 +290,9 @@ class Kohana_Kodoc {
 							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $matches[1])).'#'.$matches[2], $text);
 						}
 					break;
+					// don't show @access lines, cause they are redundant
+					case 'access':
+					continue 2;
 				}
 
 				// Add the tag
