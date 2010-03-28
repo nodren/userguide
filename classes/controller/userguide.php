@@ -23,6 +23,9 @@ class Controller_Userguide extends Controller_Template {
 		}
 		else
 		{
+			// Disable eAccelerator, it messes with	the ReflectionClass->getDocComments() calls
+            ini_set('eaccelerator.enable',0);
+
 			// Grab the necessary routes
 			$this->media = Route::get('docs/media');
 			$this->api   = Route::get('docs/api');
@@ -55,29 +58,67 @@ class Controller_Userguide extends Controller_Template {
 			require Kohana::find_file('vendor', 'markdown/markdown');
 
 			// Set the base URL for links and images
-			Kodoc_Markdown::$base_url  = URL::site($this->guide->uri()).'/';
-			Kodoc_Markdown::$image_url = URL::site($this->media->uri()).'/';
+			Kodoc_Markdown::$base_url  = preg_replace('#//#','/',URL::site($this->guide->uri()).'/');
+			Kodoc_Markdown::$image_url = preg_replace('#//#','/',URL::site($this->media->uri()).'/');
 		}
 
 		parent::before();
 	}
+	
+	// List all modules that have userguides
+	public function index()
+	{
+		$this->template->title = "Userguide";
+		$this->template->breadcrumb = array('User Guide');
+		$this->template->content = View::factory('userguide/index',array('modules'=>Kohana::config('userguide.userguide')));
+		$this->template->menu = View::factory('userguide/menu',array('modules'=>Kohana::config('userguide.userguide')));
+	}
+	
+	// Display an error if a page isn't found
+	public function error($message)
+	{
+		$this->request->status = 404;
+		$this->template->title = "Userguide - Error";
+		$this->template->content = View::factory('userguide/error',array('message'=>$message));
+		
+		// If we are in a module and that module has a menu, show that, otherwise use the index page menu
+		if ($module = $this->request->param('module') AND $config = Kohana::config("userguide.userguide.$module"))
+		{
+			$menu = $this->file($config['menu']);
+			$this->template->menu = Markdown(file_get_contents($menu));
+			$this->template->breadcrumb = array(
+				$this->guide->uri() => 'User Guide',
+				$this->guide->uri().'/'.$module => $config['name'],
+				'Error');
+		}
+		else
+		{
+			$this->template->menu = View::factory('userguide/menu',array('modules'=>Kohana::config('userguide.userguide')));
+			$this->template->breadcrumb = array($this->guide->uri() => 'User Guide','Error');
+		}
+	}
 
 	public function action_docs()
 	{
-		$page = $this->request->param('page');
+		$module = $this->request->param('module');
+		$page = $module.'/'.$this->request->param('page');
+		
+		// Trim trailing slashes, to ensure breadcrumbs work
+		$page = preg_replace('/\/+$/','',$page);
 
+		// If no module/page specified, show the index page, listing the modules
 		if ( ! $page)
 		{
-			// Redirect to the default page
-			$this->request->redirect($this->guide->uri(array('page' => 'about.kohana')));
+			return $this->index();
 		}
 
+		// Find the file for this page
 		$file = $this->file($page);
 
+		// If the file wasn't found, show the error page
 		if ( ! $file)
 		{
-			throw new Kohana_Exception('User guide page not found: :page',
-				array(':page' => $page));
+			return $this->error('User guide page not found.');
 		}
 
 		// Set the page title
@@ -85,32 +126,34 @@ class Controller_Userguide extends Controller_Template {
 
 		// Parse the page contents into the template
 		$this->template->content = Markdown(file_get_contents($file));
-
-		// Attach the menu to the template
-		$this->template->menu = Markdown(file_get_contents($this->file('menu')));
 		
-		// Bind module menu items
-		$this->template->bind('module_menus', $module_menus);
-		
-		// Attach module-specific menu items
-		$module_menus = array();
-		
-		foreach(Kohana::modules() as $module => $path)
-		{
-			if ($file = $this->file('menu.'.$module))
-			{
-				$module_menus[$module] = Markdown(file_get_contents($file)); 
-			}
-		}
+		// Find this modules menu file and send it to the template
+		$menu = $this->file(Kohana::config('userguide.userguide.'.$module.'.menu'));
+		$this->template->menu = Markdown(file_get_contents($menu));
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
 
-		// Add the breadcrumb
+		// Begin building the breadcrumbs backwards
 		$breadcrumb = array();
-		$breadcrumb[$this->guide->uri()] = __('User Guide');
-		$breadcrumb[] = $this->section($page);
+		
+		// Add the page name
 		$breadcrumb[] = $this->template->title;
+		
+		// Find all the parents
+		$last = $page;
+		$current = null;
+		while ($last !== $current = preg_replace('~/[^/]+$~','',$last))
+		{
+			$breadcrumb[$this->guide->uri().'/'.$current] = $this->title($current);
+			$last = $current;
+		}
+		
+		// Add the userguide root link
+		$breadcrumb[$this->guide->uri()] = __('User Guide');
+		
+		// Now reverse the array
+		$breadcrumb = array_reverse($breadcrumb);
 	}
 
 	public function action_api()
@@ -120,11 +163,15 @@ class Controller_Userguide extends Controller_Template {
 
 		if ($class)
 		{
+			$_class = Kodoc::factory($class);
+			
 			$this->template->title = $class;
 
 			$this->template->content = View::factory('userguide/api/class')
-				->set('doc', Kodoc::factory($class))
+				->set('doc', $_class)
 				->set('route', $this->request->route);
+
+			$this->template->menu = Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
 		}
 		else
 		{
@@ -133,10 +180,12 @@ class Controller_Userguide extends Controller_Template {
 			$this->template->content = View::factory('userguide/api/toc')
 				->set('classes', Kodoc::class_methods())
 				->set('route', $this->request->route);
+
+			$this->template->menu = Kodoc::menu();
 		}
 
 		// Attach the menu to the template
-		$this->template->menu = Kodoc::menu();
+		
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
@@ -147,7 +196,7 @@ class Controller_Userguide extends Controller_Template {
 		// Add the breadcrumb
 		$breadcrumb = array();
 		$breadcrumb[$this->guide->uri(array('page' => NULL))] = __('User Guide');
-		$breadcrumb[$this->request->route->uri()] = $this->title('api');
+		$breadcrumb[$this->request->route->uri()] = 'API Reference';
 		$breadcrumb[] = $this->template->title;
 	}
 
@@ -155,26 +204,41 @@ class Controller_Userguide extends Controller_Template {
 	{
 		// Get the file path from the request
 		$file = $this->request->param('file');
-
+		
 		// Find the file extension
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
-
+		
 		// Remove the extension from the filename
 		$file = substr($file, 0, -(strlen($ext) + 1));
-
-		if ($file = Kohana::find_file('media', $file, $ext))
-		{
-			// Send the file content as the response
-			$this->request->response = file_get_contents($file);
-		}
-		else
+		
+		// Find the file
+		$file = Kohana::find_file('media', $file, $ext);
+		
+		// If it wasn't found, send a 404
+		if ( ! $file )
 		{
 			// Return a 404 status
 			$this->request->status = 404;
+			return;
 		}
-
-		// Set the content type for this extension
+ 
+		// If the browser sent a "if modified since" header, and the file hasn't changed, send a 304
+		if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) AND strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == filemtime($file))
+		{
+			$this->request->status = 304;
+			return;
+		}
+ 
+		// Send the file content as the response, and send some basic headers
+		$this->request->response = file_get_contents($file);
 		$this->request->headers['Content-Type'] = File::mime_by_ext($ext);
+		$this->request->headers['Content-Length'] = filesize($file);
+ 
+		// Tell browsers to cache the file for an hour. Chrome especially seems to not want to cache things
+		$cachefor = 3600;
+		$this->request->headers['Cache-Control'] = 'max-age='.$cachefor.', must-revalidate, public';
+		$this->request->headers['Expires'] = gmdate('D, d M Y H:i:s',time() + $cachefor).'GMT';
+		$this->request->headers['Last-Modified'] = gmdate('D, d M Y H:i:s',filemtime($file)).' GMT';
 	}
 
 	public function after()
@@ -189,12 +253,17 @@ class Controller_Userguide extends Controller_Template {
 				$media->uri(array('file' => 'css/print.css'))  => 'print',
 				$media->uri(array('file' => 'css/screen.css')) => 'screen',
 				$media->uri(array('file' => 'css/kodoc.css'))  => 'screen',
+				$media->uri(array('file' => 'css/topline.css')) => 'screen',
+				$media->uri(array('file' => 'css/shCore.css')) => 'screen',
+				$media->uri(array('file' => 'css/shThemeDefault.css')) => 'screen',
 			);
 
 			// Add scripts
 			$this->template->scripts = array(
-				'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
+				$media->uri(array('file' => 'js/jquery-1.3.2.min.js')),
 				$media->uri(array('file' => 'js/kodoc.js')),
+				$media->uri(array('file' => 'js/shCore.js')),
+				$media->uri(array('file' => 'js/shBrushPhp.js')),
 			);
 
 			// Add languages
@@ -204,6 +273,11 @@ class Controller_Userguide extends Controller_Template {
 		return parent::after();
 	}
 
+	/**
+	 * Find a userguide page
+	 * @param   string   the url of the page
+	 * @return  string   the name of the file
+	 */
 	public function file($page)
 	{
 		if ( ! ($file = Kohana::find_file('guide', I18n::$lang.'/'.$page, 'md')))
@@ -211,22 +285,21 @@ class Controller_Userguide extends Controller_Template {
 			// Use the default file
 			$file = Kohana::find_file('guide', $page, 'md');
 		}
+		
+		// If no file has been found, try to see if $page is a folder with an index file
+		if (empty($file) OR ! $file)
+		{
+			$file = Kohana::find_file('guide',$page.'/index','md');
+		}
 
 		return $file;
 	}
 
-	public function section($page)
-	{
-		$markdown = $this->_get_all_menu_markdown();
-		
-		if (preg_match('~\*{2}(.+?)\*{2}[^*]+\[[^\]]+\]\('.preg_quote($page).'\)~mu', $markdown, $matches))
-		{
-			return $matches[1];
-		}
-		
-		return $page;
-	}
-
+	/**
+	 * Find the title of a page in the menu file by looking for the url. Assuming we are looking for "url" and the following is in the menu file: [Name](url) it will return "Name".
+	 * @param  string   the url to find the title of
+	 * @return string   the title of the page
+	 */
 	public function title($page)
 	{
 		$markdown = $this->_get_all_menu_markdown();
@@ -240,6 +313,10 @@ class Controller_Userguide extends Controller_Template {
 		return $page;
 	}
 	
+	/**
+	 * Get all the menu markdown merged together, and make it static so we only have to get it once
+	 * @return  string   the combined markdown of all the menus
+	 */
 	protected function _get_all_menu_markdown()
 	{
 		// Only do this once per request...
@@ -256,9 +333,9 @@ class Controller_Userguide extends Controller_Template {
 			}
 			
 			// Look in module specific files
-			foreach(Kohana::modules() as $module => $path)
+			foreach(Kohana::config('userguide.userguide') as $module => $options)
 			{
-				if ($file = $this->file('menu.'.$module) AND $text = file_get_contents($file))
+				if ($file = Kohana::find_file('guide',$options['menu'],'md') AND $text = file_get_contents($file))
 				{
 					// Concatenate markdown to produce one string containing all menu items
 					$markdown .="\n".$text;

@@ -1,12 +1,23 @@
 html { margin: 0; }
-body { margin: 0; }
-pre { background: #efefef; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
-table th { color: #444; background: #eee; }
+body { margin: 0; background: #F1F8DB; }
+pre { background: #eee; padding: 0.4em; border: dotted 1px #ddd; overflow: auto; }
+table th { color: #333; background: #e8e8e8; }
 table td { background: #f4f4f4; }
 	table tr.alt td { background: #fff; }
 
+#header,
+#content,
+#footer { float: left; clear: both; width: 100%; }
+
+.container {
+	width:950px;
+	margin:0px auto;
+	position:relative;
+}
+
 .container .toggle { font-size: 0.7em; float: right; padding: 0 1em; cursor: pointer; color: #777; text-decoration: none; }
 
+<<<<<<< HEAD:media/css/kodoc.css
 #topbar { padding: 1em 0; margin-bottom: 2em; background: #111; border-bottom: solid 0.2 #eee; color: #ccc; }
 	#topbar ul.breadcrumb { display: block; margin: 0; padding: 0; overflow: auto; }
 		#topbar ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.6em; }
@@ -59,3 +70,162 @@ table td { background: #f4f4f4; }
 #content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
 	#content dl.tags dt { margin: 0 0 0.4em; clear: both; float: left; width: 25%; }
 	#content dl.tags dd { margin: 0; padding: 0; clear: right; float: right; }
+=======
+#header {
+	padding:0;
+	background:#77c244 url('../img/header.png') center top repeat-x;
+	margin-bottom:10px;
+	border-bottom:1px solid #0D6D22;
+}
+	#header .container {
+		padding:10px 0;
+	}
+
+	ul.breadcrumb { display: block; margin: 0; padding:.3em 0; overflow: auto; }
+		ul.breadcrumb li { display: block; float: left; margin: 0; padding: 0; padding-left: 0.4em; font-size:1.6em; font-weight:bold; }
+		ul.breadcrumb li:before { content: '» '; color: #595959; }
+			ul.breadcrumb li a { color: #00262F; text-decoration: underline; }
+				ul.breadcrumb li a:hover { color:#1F6D5B; }
+
+	#content hr { margin: 1em 0 1em; background-color: #D2DDA8; }
+	
+	#content a { color: #004352; }
+	#content a:hover { color: #FF9900; }
+	#content a:active { text-decoration: none; }
+
+#kodoc-content {
+	float:left;
+	width:690px;
+	margin-bottom:20px;
+	margin-right:20px;
+	padding-left:19px;
+	padding-right:19px;
+	background:white;
+}
+	
+#kodoc-content h1 { margin: 0 -20px .7em; padding: 0.4em 20px; background: #9CE251; color: #113C32; }
+#kodoc-content h2 { margin: 0 -20px 0.535em; padding: 0.4em 20px; background: #E3EDC4; color:#245B35; }
+#kodoc-content h3 { margin-left:-8px; margin-right:-8px; padding: 0.4em 8px; background: #F1F8DB; color:#245B35; }
+#kodoc-content h4 { border-bottom:1px solid #ccc; }
+#kodoc-content h1 small,
+#kodoc-content h2 small,
+#kodoc-content h3 small,
+#kodoc-content h4 small,
+#kodoc-content h5 small,
+#kodoc-content h6 small { font-size: 0.8em; font-weight: normal; color: #444; }
+#kodoc-content a.heading-link {font-size: 0.8em; float:right; display: none; margin-top:-4px;}
+#kodoc-content h1:hover a.heading-link,
+#kodoc-content h2:hover a.heading-link,
+#kodoc-content h3:hover a.heading-link,
+#kodoc-content h4:hover a.heading-link,
+#kodoc-content h5:hover a.heading-link,
+#kodoc-content h6:hover a.heading-link {display: block;}
+#kodoc-content pre { font-size: 1em; line-height: 1.4em; border:1px dashed #24933B; background:#f7f7f7; padding:8px; }
+#kodoc-content pre,
+#kodoc-content code { color:#186027; }
+
+#kodoc-content div.class-list div.class { width: 50%; }
+#kodoc-content div.class-list div.class.left { float: left; clear: both; }
+#kodoc-content div.class-list div.class.right { float: right; }
+	#kodoc-content div.class-list div.class h2 { margin: 0.4em; padding: 0.2em 0.4em; font-size: 1em; }
+
+#kodoc-content div.toc { margin-bottom: 1em; padding-bottom: 1em; background: #eee; }
+	#kodoc-content div.toc ul { margin: 0.6em 1em; padding: 0; list-style: none; }
+		#kodoc-content div.toc li { margin: 0; padding: 0; }
+	#kodoc-content div.toc h3 { margin: 0; padding: 0.2em 1em; font-size: 1em; color: #eee; background: #111; }
+#kodoc-content div.method,
+#kodoc-content div.properties,
+#kodoc-content div.constants { margin-bottom: 1em; }
+	#kodoc-content div.method h3 .param { font-weight: normal; cursor: help; border-bottom:1px dashed #666666;}
+	#kodoc-content div.method h3 abbr.param { text-transform: none; font-size: 1em; }
+#kodoc-content p.note { display: block; padding: 0.4em 0.6em; background: #eee; color: #444; font-size: 0.9em; border: solid 1px #eee; }
+#kodoc-content dl.tags { overflow: auto; background: #eee; padding: 1em; border: solid 6px #ddd; }
+	#kodoc-content dl.tags dt { margin: 0 0 0.4em; clear: both; float: left; width: 25%; }
+	#kodoc-content dl.tags dd { margin: 0; padding: 0; clear: right; float: right; }
+
+	
+#kodoc-menu {
+	float:left;
+	width:200px;
+	margin-bottom:40px;
+	background:#fff;
+}
+
+	/* Kohana and Module headers */
+	#kodoc-menu h3 { font-size: 1.4em; margin: 0; padding: .5em .8em .4em; background:#9CE251; color:#00262F; }
+	
+	/* Header for constants, properties, methods headers */
+	#kodoc-menu #class-menu h4 { font-size: 1.2em; margin: 0.6em 0.4em 0; padding: .3em .6em .2em; background:#F1F8DB; color:#245B35; }
+	#kodoc-menu #class-menu ul { margin-left:10px; margin-bottom:0.3em; }
+	#kodoc-menu #class-menu ul li { padding: 0.1em 0; }
+	#kodoc-menu #class-menu ul a { padding-left:0; background:none; }
+	
+	/* Menus */
+	#kodoc-menu ol,
+	#kodoc-menu ul,
+	#kodoc-menu ol ol,
+	#kodoc-menu ul ul,
+	#kodoc-menu ul ol,
+	#kodoc-menu ol ul { margin:0; padding:0; list-style:none; }
+	
+	#kodoc-menu ol ol,
+	#kodoc-menu ul ul,
+	#kodoc-menu ul ol,
+	#kodoc-menu ol ul { margin-left:14px }
+	
+	/* Top level menus getting padding on top and bottom */
+	#kodoc-menu>ol,
+	#kodoc-menu>ul { padding-top: 0.6em; padding-bottom:0.6em; padding-left:3px; }
+	
+	/* List Items */
+	#kodoc-menu li { margin: 0; display:block; position:relative; }
+	
+	/* Links */
+	#kodoc-menu li a, #kodoc-menu li strong {
+		padding-left: 14px;
+		background:transparent url('../img/arrow.png') -40px 0 no-repeat;
+	}
+	
+	/* Expandable section headers */
+	#kodoc-menu .section {
+		display: block;
+		padding: 0.1em 0 0 14px;
+		font-weight: bold;
+		color: #00262F;
+		background-position: -20px -20px; 
+	}
+	
+	#kodoc-menu .section-active {
+		background-position: 0 -40px;
+	}
+	
+	/* Toggle button */
+	#kodoc-menu .section .toggler {
+		position:absolute;
+		top:0;
+		left:0;
+		width:14px;
+		height:19px;
+		cursor:pointer;
+	}
+	
+#footer p { font-size: 0.8em; text-transform: uppercase; }
+#footer .copyright { text-align: right; }
+	
+#footer {
+	padding: 1em 0;
+	color: #666;
+	font-size: 0.9em;
+}
+
+	#footer a {
+		color: #999;
+		text-decoration:underline;
+	}
+	#footer a:hover {
+		text-decoration:none;
+	}
+	#footer .copyright {
+		color: #aaa;
+	}
+>>>>>>> kodoc:media/css/kodoc.css

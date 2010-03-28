@@ -6,56 +6,95 @@ $(document).ready(function()
 		$(this).parents('form').submit();
 	});
 
+	// Syntax highlighter
+	
+	$('.method pre code').each(function(){
+		$(this).addClass('brush: php');
+	});
+
+	$('.description pre code').each(function(){
+		$(this).addClass('brush: php');
+	});
+
+	SyntaxHighlighter.config.tagName = 'code';
+	SyntaxHighlighter.defaults.toolbar = false;
+	SyntaxHighlighter.defaults.gutter = false;
+	SyntaxHighlighter.all();
+
 	// Striped tables
-	$('#content tbody tr:even').addClass('alt');
+	$('#kodoc-content tbody tr:odd').addClass('alt');
 
-	// Toggle menus
-	$('#menu ol > li').each(function()
+	// Collapsable categories
+	$('#kodoc-menu li:has(ul), #kodoc-menu li:has(ol)').each(function()
 	{
-		var link = $(this).find('strong');
-		var menu = $(this).find('ul');
-		// var togg = $('<span class="toggle">[ + ]</span>');
-
+		var link = $(this).find(':first');
+		var menu = $(this).find('ul:first,ol:first');
+		
+		link.prepend('<div class="toggler"></div>');
+		link.addClass('section');
+		
 		var open  = function()
 		{
-			// togg.html('[ &ndash; ]');
-			menu.stop().slideDown();
+			menu.slideDown();
+			link.addClass('section-active');
 		};
 
 		var close = function()
 		{
-			// togg.html('[ + ]');
-			menu.stop().slideUp();
+			menu.slideUp();
+			link.removeClass('section-active');
 		};
 
-		if (menu.find('a[href="'+ window.location.pathname +'"]').length)
+		if (menu.find('a[href="'+ window.location.pathname +'"]').length || $(this).find('a[href="'+ window.location.pathname +'"]').length)
 		{
 			// Currently active menu
-			link.toggle(close, open);
+			link.find('.toggler:first').toggle(close, open);
+			link.addClass('section-active');
 		}
 		else
 		{
-			menu.slideUp(0);
-			link.toggle(open, close);
+			menu.hide();
+			link.find('.toggler:first').toggle(open, close);
+			link.removeClass('section-active');
 		}
 	});
 
-	// Collapsable class contents
-	$('#content #toc').each(function()
-	{
-		var header  = $(this);
-		var content = $('#content div.toc').hide();
-
-		$('<span class="toggle">[ + ]</span>').toggle(function()
+	// "Link to" headers
+	$('#kodoc-content')
+		.find('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]').each(function(){
+			$(this).append('<a href="#' + $(this).attr('id') + '" class="heading-link">Link to this</a>');
+		});
+	/*
+	 
+	 I'm not exactly sure what I did that broke this code... but I've replaced it with the above code.  ~bluehawk
+	 
+	$('#kodoc-content')
+		.children('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]')
+		.append(function(index, html){
+			return '<a href="#' + $(this).attr('id') + '" class="heading-link">Link to this</a>';
+		});
+	*/
+	
+	// Show source links
+	$('#kodoc-content .method-source').each(function(){
+		$(this).find('h5').each(function(){ $(this).append(' <a class="toggler" href="#">[show]</a>') });
+		var link = $(this).find('.toggler');
+		var code = $(this).find('pre');
+		
+		var show = function()
 		{
-			$(this).html('[ &ndash; ]');
-			content.stop().slideDown();
-		},
-		function()
+			code.slideDown();
+			link.html('[hide]');
+		};
+		
+		var hide = function()
 		{
-			$(this).html('[ + ]');
-			content.stop().slideUp();
-		})
-		.appendTo(header);
+			code.slideUp();
+			link.html('[show]');
+		};
+		
+		link.toggle(show,hide);
+		
+		code.hide();
 	});
 });

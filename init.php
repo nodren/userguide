@@ -17,11 +17,11 @@ Route::set('docs/api', 'guide/api(/<class>)', array('class' => '[a-zA-Z0-9_]+'))
 	));
 
 // Translated user guide
-Route::set('docs/guide', 'guide(/<page>)', array(
+Route::set('docs/guide', 'guide(/<module>(/<page>))', array(
 		'page' => '.+',
 	))
 	->defaults(array(
 		'controller' => 'userguide',
 		'action'     => 'docs',
+		'module'     => '',
 	));
-
