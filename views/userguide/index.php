@@ -1,27 +1,11 @@
-<h1>Kodoc</h1>
-
-<?php if (Kohana::config('userguide.api_browser') === TRUE): ?>
-<h3>API Reference</h3>
-<p><strong><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></strong> - A reference of all classes that are enabled.</p>
-<?php endif ?>
-
-<h3>Modules</h3>
-<p>The following modules have userguide pages:</p>
-
+<h1>Userguides</h1>
+<p>Please select a module:</p>
 <?php if( ! empty($modules)): ?>
-
-	<?php foreach($modules as $url => $module): ?>
-	
+	<?php foreach($modules as $url => $name): ?>
 		<p>
-			<strong><?php echo html::anchor(Route::get('docs/guide')->uri().'/'.$url,$module['name']) ?></strong> - 
-			<?php echo $module['desc'] ?>
+			<strong><?php echo html::anchor('userguide/guide/'.$url, $name) ?></strong>
 		</p>
-	
 	<?php endforeach; ?>
-	
 <?php else: ?>
-
-	<p class="error">I couldn't find any modules with userguide pages.</p>
-
+	<p class="error">New userguide modules are enabled. Please enable a module in the userguide.php config file and try again.</p>
 <?php endif; ?>
-	
