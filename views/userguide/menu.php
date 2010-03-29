@@ -1,7 +1,10 @@
+
+<?php if (Kohana::config('userguide.api_browser') === TRUE): ?>
 <h3>API Reference</h3>
 <ul>
 	<li><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></li>
 </ul>
+<?php endif ?>
 <h3>Modules</h3>
 <?php if( ! empty($modules)): ?>
 
