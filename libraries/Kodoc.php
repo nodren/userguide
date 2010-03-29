@@ -8,10 +8,137 @@
  * @license    http://kohanaphp.com/license
  */
 class Kodoc {
+	protected static $packages = array();
 
 	public static function factory($class)
 	{
 		return new Kodoc_Class($class);
+	}
+
+	protected static function packages()
+	{
+		// If we already found the packages just return them
+		if ( ! empty(Kodoc::$packages))
+			return Kodoc::$packages;
+
+		$cache = Cache::instance();
+
+		// Do we have anything cached?
+		if (Kohana::config('userguide.cache') AND $packages = $cache->get('kodoc_packages'))
+			return Kodoc::$packages = $packages;
+
+		$files = Kodoc::classes();
+
+		$packages = array();
+
+		foreach ($files as $group => $classes)
+		{
+			// We have to parse config files differently
+			if ($group === 'config')
+			{
+				foreach ($classes as $config)
+				{
+					$config = Kodoc::parse_config($config);
+
+					if (isset($config->tags['package']))
+					{
+						foreach ($config->tags['package'] as $package)
+						{
+							$packages[strtolower($package)]['configs'][$config->name] = $config->name;
+						}
+					}
+					else
+					{
+						$packages['unknown']['configs'][$config->name] = $config->name;
+					}
+				}
+			}
+			else
+			{
+				foreach ($classes as $class)
+				{
+					$class = Kodoc::factory($class);
+
+					if (isset($class->tags['package']))
+					{
+						foreach ($class->tags['package'] as $package)
+						{
+							$packages[strtolower($package)][$group][$class->class->name] = $class->class->name;
+						}
+					}
+					else
+					{
+						$packages['unknown'][$group][$class->class->name] = $class->class->name;
+					}
+				}
+			}
+		}
+
+		// Sort the groups in each package
+		foreach($packages as &$package)
+		{
+			foreach($package as &$group)
+			{
+				ksort($group);
+			}
+			ksort($package);
+		}
+
+		// Cache the results
+		if (Kohana::config('userguide.cache'))
+		{
+			$cache->set('kodoc_packages', $packages);
+		}
+
+		return Kodoc::$packages = $packages;
+	}
+
+	public static function parse_config($file)
+	{
+		$config = new stdClass;
+		$config->name = $file;
+		$config->description = '';
+		$config->options = array();
+
+		if ($filename = Kohana::find_file('config', $file))
+		{
+			$config->source = file_get_contents($filename[0]);
+
+
+			$start_offset = 0;
+
+			// Find the config file comment first
+			if (preg_match('~(/\*.*?\*/)~s', $config->source, $config_comment))
+			{
+				$comment = Kodoc::parse($config_comment[0]);
+				$config->description = $comment[0];
+				$config->tags = $comment[1];
+				$start_offset = strlen($config_comment[0]);
+			}
+
+			preg_match_all('~(/\*.*?\*/)?\s*(\$config\[([^\]]+)]\s*=\s*([^;]*?);)~s', $config->source, $matches, PREG_SET_ORDER, $start_offset);
+
+			foreach ($matches as $item)
+			{
+				$comment = Kodoc::parse($item[1]);
+				$default = isset($comment[1]['default'][0]) ? $comment[1]['default'][0] : NULL;
+
+				// Remove the @default tag
+				unset($comment[1]['default']);
+
+				$config->options[] = (object) array
+									(
+										'description' => $comment[0],
+										'source'      => $item[2],
+										'name'        => trim($item[3], '\'"'),
+										'value'       => $item[4],
+										'default'     => $default,
+										'tags'        => (object) $comment[1],
+									);
+			}
+		}
+
+		return $config;
 	}
 
 	/**
@@ -21,134 +148,7 @@ class Kodoc {
 	 */
 	public static function menu()
 	{
-		$classes = Kodoc::classes();
-
-		foreach ($classes as $class)
-		{
-			if (isset($classes['kohana_'.$class]))
-			{
-				// Remove extended classes
-				unset($classes['kohana_'.$class]);
-			}
-		}
-
-		ksort($classes);
-
-		$menu = array();
-
-		foreach ($classes as $class)
-		{
-			$class = Kodoc_Class::factory($class);
-
-			// Test if we should show this class
-			if ( ! Kodoc::show_class($class))
-				continue;
-
-			$link = html::anchor($route->uri(array('class' => $class->class->name)), $class->class->name);
-
-			// Find the category, use the package if no category specified
-			if (isset($class->tags['category']))
-			{
-				// Only get the first if there are several
-				$category = current($class->tags['category']);
-			}
-			else if (isset($class->tags['package']))
-			{
-				// Only get the first if there are several
-				$category = current($class->tags['package']);
-			}
-			else
-			{
-				$category = "[No Package or Category]";
-			}
-
-			// If the category has a /, we need to do some nesting for the sub category
-			if (strpos($category,'/'))
-			{
-				// First, loop through each piece and make sure that array exists
-				$path =& $menu;
-				foreach (explode('/',$category) as $piece)
-				{
-					// If this array doesn't exists, create it
-					if ( ! isset($path[$piece]))
-					{
-						$path[$piece] = array('__NAME' => $piece);
-					}
-					$path =& $path[$piece];
-				}
-
-				// And finally, add this link to that subcategory
-				$path[] = $link;
-			}
-			else
-			{
-				// Just add this class to that category
-				$menu[$category][] = $link;
-			}
-		}
-
-		// Return the output of _menu_print()
-		ksort($menu);
-		return "<h3>API Browser</h3>\n".self::_menu_print($menu);
-	}
-
-	/**
-	 * This method takes the array built by self::menu and turns it into html
-	 *
-	 * @param   array   an array of categories and/or classes
-	 * @return  string  the html
-	 */
-	protected static function _menu_print($list)
-	{
-		// Begin the output!
-		$output = array('<ol>');
-
-		foreach ($list as $key => $value)
-		{
-			// If this key is the name for this subcategory, skip it. (This is used for sorting)
-			if  ($key === '__NAME')
-				continue;
-
-			// If $value is an array, than this is a category
-			if (is_array($value))
-			{
-				// Sort the things in this category, according to self::sortcategory
-				uasort($value,array(__CLASS__,'sort_category'));
-
-				// Add this categories contents to the output
-				$output[] = "<li><strong>$key</strong>".self::_menu_print($value).'</li>';
-			}
-			// Otherwise, this is just a normal element, just print it.
-			else
-			{
-				$output[] = "<li>$value</li>";
-			}
-		}
-
-		$output[] = '</ol>';
-
-		return implode("\n", $output);
-	}
-
-	/**
-	 * This function is used by self::_menu_print to organize the array, so that categories (arrays) are first then the classes.
-	 *
-	 */
-	public static function sort_category($a,$b)
-	{
-		// If only one is an array (category), put that one before strings (class)
-		if (is_array($a) AND ! is_array($b))
-			return -1;
-		elseif (! is_array($a) AND is_array($b))
-			return 1;
-
-		// If they are both arrays, use strcmp on the __Name key
-		elseif (is_array($a) AND is_array($b))
-			return strcmp($a['__NAME'],$b['__NAME']);
-
-		// This means they are both strings, so compare the strings
-		else
-			return strcmp($a,$b);
+		return Kodoc::packages();
 	}
 
 	/**
@@ -159,70 +159,38 @@ class Kodoc {
 	 * @param   array   array of files, obtained using Kohana::list_files
 	 * @return   array   an array of all the class names
 	 */
-	public static function classes(array $list = NULL)
+	public static function classes($type = NULL)
 	{
-		if ($list === NULL)
-		{
-			$list = Kohana::list_files('classes');
-		}
-
 		$classes = array();
 
-		foreach ($list as $name => $path)
+		if ($type === NULL)
 		{
-			if (is_array($path))
+			foreach(array('libraries', 'helpers', 'models', 'controllers', 'core', 'config') AS $type)
 			{
-				$classes += Kodoc::classes($path);
+				$classes[$type] = Kodoc::classes($type);
 			}
-			else
-			{
-				// Remove "classes/" and the extension
-				$class = substr($name, 8, -(strlen(EXT)));
+		}
+		else
+		{
+			$files = Kohana::list_files($type);
 
-				// Convert slashes to underscores
-				$class = str_replace(DIRECTORY_SEPARATOR, '_', strtolower($class));
+			foreach ($files as $class)
+			{
+				// Remove directory and the extension
+				$class = basename($class, EXT);
+
+				// Add Controller prefix
+				if ($type === 'controllers')
+				{
+					$class .= '_Controller';
+				}
+				else if ($type === 'models')
+				{
+					$class .= '_Model';
+				}
 
 				$classes[$class] = $class;
 			}
-		}
-
-		return $classes;
-	}
-
-	/**
-	 * Get all classes and methods of files in a list.
-	 *
-	 * >  I personally don't like this as it was used on the index page.  Way too much stuff on one page.  It has potential for a package index page though.
-	 * >  For example:  class_methods( Kohana::list_files('classes/sprig') ) could make a nice index page for the sprig package in the api browser
-	 * >     ~bluehawk
-	 *
-	 */
-	public static function class_methods(array $list = NULL)
-	{
-		$list = Kodoc::classes($list);
-
-		$classes = array();
-
-		foreach ($list as $class)
-		{
-			$_class = new ReflectionClass($class);
-
-			if (stripos($_class->name, 'Kohana') === 0)
-			{
-				// Skip the extension stuff stuff
-				continue;
-			}
-
-			$methods = array();
-
-			foreach ($_class->getMethods() as $_method)
-			{
-				$methods[] = $_method->name;
-			}
-
-			sort($methods);
-
-			$classes[$_class->name] = $methods;
 		}
 
 		return $classes;
@@ -358,7 +326,7 @@ class Kodoc {
 	{
 		$api_packages = Kohana::config('userguide.api_packages');
 
-		// If api_packages is true, all packages should be shown
+		// If api_packages is TRUE, all packages should be shown
 		if ($api_packages === TRUE)
 			return TRUE;
 
@@ -370,7 +338,7 @@ class Kodoc {
 		// Loop through each package tag
 		foreach ($packages as $package)
 		{
-			// If this package is in the allowed packages, set show this to true
+			// If this package is in the allowed packages, set show this to TRUE
 			if (in_array($package,explode(',',$api_packages)))
 				$show_this = TRUE;
 		}

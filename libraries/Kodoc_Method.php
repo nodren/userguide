@@ -63,17 +63,15 @@ class Kodoc_Method extends Kodoc {
 
 			foreach ($this->method->getParameters() as $i => $param)
 			{
-				$param = new Kodoc_Method_Param(array($this->method->class,$this->method->name),$i);
+				$param = new Kodoc_Method_Param(array($this->method->class, $this->method->name),$i);
 
 				if (isset($tags['param'][$i]))
 				{
-					preg_match('/^(\S+)(?:\s*(.+))?$/', $tags['param'][$i], $matches);
-
-					$param->type = $matches[1];
-
-					if (isset($matches[2]))
+					if (preg_match('/^(\S*)\s*(\$\w+)?(?:\s*(.+?))?$/', $tags['param'][$i], $matches))
 					{
-						$param->description = $matches[2];
+						$param->type = $matches[1];
+
+						$param->description = arr::get($matches, 3);
 					}
 				}
 				$params[] = $param;
@@ -102,39 +100,13 @@ class Kodoc_Method extends Kodoc {
 
 	public function params_short()
 	{
-		$out = '';
-		$required = true;
-		$first = true;
+		$params = array();
 		foreach ($this->params as $param)
 		{
-			if ($required AND $param->default AND $first)
-			{
-				$out .= '[ '.$param->short();
-				$required = false;
-				$first = false;
-			}
-			elseif ($required AND $param->default)
-			{
-				$out .= '[ , '.$param->short();
-				$required = false;
-			}
-			elseif ($first)
-			{
-				$out .= $param->short();
-				$first = false;
-			}
-			else
-			{
-				$out .= ', '.$param->short();
-			}
+			$params[] = $param->short();
 		}
 
-		if ( ! $required)
-		{
-			$out .= '] ';
-		}
-
-		return $out;
+		return implode(', ', $params);
 	}
 
 } // End Kodoc_Method

@@ -119,37 +119,31 @@ class Userguide_Controller extends Template_Controller {
 		$breadcrumb = array_reverse($breadcrumb);
 	}
 
-	public function api($module = NULL, $class = NULL)
+	public function api($package = NULL, $class_name = NULL)
 	{
-		if ($class)
+		if ($class_name)
 		{
 			try
 			{
-				$_class = Kodoc_Class::factory($class);
-
-				if ( ! Kodoc::show_class($_class))
-					throw new Exception("That class is hidden");
+				$class = Kodoc_Class::factory($class_name);
 			}
 			catch (Exception $e)
 			{
 				Event::run('system.404');
 			}
 
-			$this->template->title = $class;
+			$this->template->title = $class_name;
 
-			$this->template->content = View::factory('userguide/api/class')
-				->set('doc', $_class)
-				->set('route', 'test');
-
-			$this->template->menu = Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
+			$this->template->content = View::factory('userguide/api/class', array('doc' => $class));
+			$this->template->menu = View::factory('userguide/api/menu', array('doc' => $class));
 		}
 		else
 		{
-			$this->template->title = __('Table of Contents');
+			$this->template->title = __('API Reference');
 
-			$this->template->content = Kodoc::menu();
+			$this->template->content = View::factory('userguide/api/toc', array('toc' => Kodoc::menu()));
 
-			$this->template->menu = Kodoc::menu();
+			$this->template->menu = $this->page('kohana/menu');
 		}
 
 		// Bind the breadcrumb
@@ -157,8 +151,8 @@ class Userguide_Controller extends Template_Controller {
 
 		// Add the breadcrumb
 		$breadcrumb = array();
-		$breadcrumb['userguide'] = __('User Guide');
-		$breadcrumb['userguide/api'] = 'API Reference';
+		$breadcrumb['userguide'] = 'User Guide';
+		$breadcrumb['userguide/kohana'] = 'Kohana';
 		$breadcrumb[] = $this->template->title;
 	}
 
@@ -219,7 +213,7 @@ class Userguide_Controller extends Template_Controller {
 	 * @param   string   the url of the page
 	 * @return  string   the name of the file
 	 */
-	public function file($page)
+	private function page($page)
 	{
 		if ( ! ($file = Kohana::find_file('guide', $page, FALSE, 'md')))
 		{
@@ -227,7 +221,12 @@ class Userguide_Controller extends Template_Controller {
 			$file = Kohana::find_file('guide', $page.'/index', FALSE, 'md');
 		}
 
-		return $file;
+		if ( ! $file)
+		{
+			Event::run('system.404');
+		}
+
+		return Markdown(file_get_contents($file));
 	}
 
 	/**

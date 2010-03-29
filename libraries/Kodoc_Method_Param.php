@@ -40,7 +40,7 @@ class Kodoc_Method_Param extends Kodoc {
 
 	public function __construct($method,$param)
 	{
-		$this->param = new ReflectionParameter($method,$param);
+		$this->param = new ReflectionParameter($method, $param);
 		$this->name = $this->param->name;
 
 		if ($this->param->isDefaultValueAvailable())
@@ -61,18 +61,18 @@ class Kodoc_Method_Param extends Kodoc {
 			}
 			else
 			{
-				$this->default .= print_r($default,true);
+				$this->default .= print_r($default, TRUE);
 			}
 		}
 
 		if ($this->param->isPassedByReference())
 		{
-			$this->byref = true;
+			$this->byref = TRUE;
 		}
 
 		if ($this->param->isOptional())
 		{
-			$this->optional = true;
+			$this->optional = TRUE;
 		}
 	}
 
@@ -91,7 +91,7 @@ class Kodoc_Method_Param extends Kodoc {
 
 		if (isset($this->description))
 		{
-			$out .= '<span class="param" title="'.ucfirst($this->description).'">$'.$this->name.'</span> ';
+			$out .= '<span class="param" title="'.$this->description.'">$'.$this->name.'</span> ';
 		}
 		else
 		{

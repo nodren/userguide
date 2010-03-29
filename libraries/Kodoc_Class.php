@@ -88,59 +88,20 @@ class Kodoc_Class extends Kodoc {
 
 	public function methods()
 	{
-		$methods = $this->class->getMethods();
+		$all_methods = $this->class->getMethods();
 
-		usort($methods,array($this,'_method_sort'));
+		$methods = array();
 
-		foreach ($methods as $key => $method)
+		foreach ($all_methods as $key => $method)
 		{
-			$methods[$key] = new Kodoc_Method($this->class->name, $method->name);
+			// Only show methods declared in this class
+			$declaring_class = str_replace('_Core', '', $method->getDeclaringClass()->name);
+			if ($declaring_class === $this->class->name)
+			{
+				$methods[$key] = new Kodoc_Method($this->class->name, $method->name);
+			}
 		}
-
 		return $methods;
-	}
-
-	protected function _method_sort($a,$b)
-	{
-		/*
-		echo kohana::debug('a is '.$a->class.'::'.$a->name,'b is '.$b->class.'::'.$b->name,
-						   'are the classes the same?',$a->class == $b->class,'if they are, the result is:',strcmp($a->name,$b->name),
-						   'is a this class?',$a->name == $this->class->name,-1,
-						   'is b this class?',$b->name == $this->class->name,1,
-						   'otherwise, the result is:',strcmp($a->class,$b->class)
-						   );
-		*/
-
-
-		// If both methods are defined in the same class, just compare the method names
-		if ($a->class == $b->class)
-			return strcmp($a->name,$b->name);
-
-		// If one of them was declared by this class, it needs to be on top
-		if ($a->name == $this->class->name)
-			return -1;
-		if ($b->name == $this->class->name)
-			return 1;
-
-		// Otherwise, get the parents of each methods declaring class, then compare which function has more "ancestors"
-		$adepth = 0;
-		$bdepth = 0;
-
-		$parent = $a->getDeclaringClass();
-		do
-		{
-			$adepth++;
-		}
-		while ($parent = $parent->getParentClass());
-
-		$parent = $b->getDeclaringClass();
-		do
-		{
-			$bdepth++;
-		}
-		while ($parent = $parent->getParentClass());
-
-		return $bdepth - $adepth;
 	}
 
 } // End Kodac_Class

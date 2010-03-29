@@ -1,16 +1,22 @@
-<h1><?php echo __('Available Classes') ?></h1>
+<h1><?php echo __('Available Classes'); $package = 'kohana'; ?></h1>
 
-<div class="class-list">
-
-	<?php foreach ($classes as $class => $methods): $link = $route->uri(array('class' => $class)) ?>
-	<div class="class <?php echo Text::alternate('left', 'right') ?>">
-		<h2><?php echo HTML::anchor($link, $class) ?></h2>
-		<ul class="methods">
-		<?php foreach ($methods as $method): ?>
-			<li><?php echo HTML::anchor("{$link}#{$method}", "{$class}::{$method}") ?></li>
-		<?php endforeach ?>
-		</ul>
-	</div>
-	<?php endforeach ?>
-
+<div id="toc">
+	<?php foreach ($toc['kohana'] as $group => $list): $total = count($list); $per_row = ceil($total / 3) ?>
+		<?php if (count($toc) > 0): $i = $c = 0; ?>
+			<div class="toc" style="overflow: auto">
+				<h5><?php echo ucfirst($group) ?></h5>
+				<?php foreach (array_keys($list) as $name): $c++; $i++; ?>
+					<?php if ($c === 1): ?>
+						<ul>
+					<?php endif; ?>
+						<li><?php echo html::anchor('userguide/api/'.$package.'/'.$name, $name) ?></li>
+					<?php if ($c == $per_row OR $i == $total): $c = 0; ?>
+						</ul>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</div>
+		<?php else: ?>
+			<p>No Files Found</p>
+		<?php endif; ?>
+	<?php endforeach; ?>
 </div>

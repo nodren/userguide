@@ -11,8 +11,8 @@
 		<li><em>None</em></li>
 	<?php endif ?>
 	</ul>
-	
-	
+
+
 	<h4>Properties</h4>
 	<ul>
 	<?php if ($properties = $doc->properties()): ?>
@@ -23,7 +23,7 @@
 		<li><em>None</em></li>
 	<?php endif ?>
 	</ul>
-	
+
 	<h4>Methods</h4>
 	<ul>
 	<?php if ($methods = $doc->methods()): ?>
