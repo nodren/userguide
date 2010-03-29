@@ -119,11 +119,8 @@ class Userguide_Controller extends Template_Controller {
 		$breadcrumb = array_reverse($breadcrumb);
 	}
 
-	public function action_api()
+	public function api($module = NULL, $class = NULL)
 	{
-		// Get the class from the request
-		$class = $this->request->param('class');
-
 		if ($class)
 		{
 			try
@@ -135,14 +132,14 @@ class Userguide_Controller extends Template_Controller {
 			}
 			catch (Exception $e)
 			{
-				return $this->error("API Reference: Class not found.");
+				Event::run('system.404');
 			}
 
 			$this->template->title = $class;
 
 			$this->template->content = View::factory('userguide/api/class')
 				->set('doc', $_class)
-				->set('route', $this->request->route);
+				->set('route', 'test');
 
 			$this->template->menu = Kodoc::menu().View::factory('userguide/api/menu',array('doc'=>$_class));
 		}
@@ -158,13 +155,10 @@ class Userguide_Controller extends Template_Controller {
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
 
-		// Get the docs URI
-		$guide = Route::get('docs/guide');
-
 		// Add the breadcrumb
 		$breadcrumb = array();
-		$breadcrumb[$this->guide->uri(array('page' => NULL))] = __('User Guide');
-		$breadcrumb[$this->request->route->uri()] = 'API Reference';
+		$breadcrumb['userguide'] = __('User Guide');
+		$breadcrumb['userguide/api'] = 'API Reference';
 		$breadcrumb[] = $this->template->title;
 	}
 

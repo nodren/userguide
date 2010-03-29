@@ -19,13 +19,6 @@ class Kodoc_Markdown extends MarkdownExtra_Parser {
 	 */
 	public static $image_url = '';
 
-	/**
-	 * Currently defined heading ids.
-	 * Used to prevent creating multiple headings with same id.
-	 * @var array
-	 */
-	protected $_heading_ids = array();
-
 	public function __construct()
 	{
 		// doImage is 10, add image url just before
@@ -45,78 +38,6 @@ class Kodoc_Markdown extends MarkdownExtra_Parser {
 
 		// PHP4 makes me sad.
 		parent::MarkdownExtra_Parser();
-	}
-
-	/**
-	 * Callback for the heading setext style
-	 *
-	 * Heading 1
-	 * =========
-	 *
-	 * @param  array    Matches from regex call
-	 * @return string   Generated html
-	 */
-	function _doHeaders_callback_setext($matches)
-	{
-		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
-			return $matches[0];
-		$level = $matches[3]{0} == '=' ? 1 : 2;
-		$attr  = $this->_doHeaders_attr($id =& $matches[2]);
-
-		// Only auto-generate id if one doesn't exist
-		if(empty($attr))
-			$attr = ' id="'.$this->make_heading_id($matches[1]).'"';
-
-		$block = "<h$level$attr>".$this->runSpanGamut($matches[1])."</h$level>";
-		return "\n" . $this->hashBlock($block) . "\n\n";
-	}
-
-	/**
-	 * Callback for the heading atx style
-	 *
-	 * # Heading 1
-	 *
-	 * @param  array    Matches from regex call
-	 * @return string   Generated html
-	 */
-	function _doHeaders_callback_atx($matches)
-	{
-		$level = strlen($matches[1]);
-		$attr  = $this->_doHeaders_attr($id =& $matches[3]);
-
-		// Only auto-generate id if one doesn't exist
-		if(empty($attr))
-			$attr = ' id="'.$this->make_heading_id($matches[2]).'"';
-
-		$block = "<h$level$attr>".$this->runSpanGamut($matches[2])."</h$level>";
-		return "\n" . $this->hashBlock($block) . "\n\n";
-	}
-
-
-	/**
-	 * Makes a heading id from the heading text
-	 * If any heading share the same name then subsequent headings will have an integer appended
-	 *
-	 * @param  string The heading text
-	 * @return string ID for the heading
-	 */
-	function make_heading_id($heading)
-	{
-		$id = url::title($heading, '-', TRUE);
-
-		if(isset($this->_heading_ids[$id]))
-		{
-			$id .= '-';
-
-			$count = 0;
-
-			while (isset($this->_heading_ids[$id]) AND ++$count)
-			{
-				$id .= $count;
-			}
-		}
-
-		return $id;
 	}
 
 	public function doIncludeViews($text)

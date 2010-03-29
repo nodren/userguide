@@ -36,8 +36,6 @@ class Kodoc {
 
 		$menu = array();
 
-		$route = Route::get('docs/api');
-
 		foreach ($classes as $class)
 		{
 			$class = Kodoc_Class::factory($class);
@@ -46,7 +44,7 @@ class Kodoc {
 			if ( ! Kodoc::show_class($class))
 				continue;
 
-			$link = HTML::anchor($route->uri(array('class' => $class->class->name)), $class->class->name);
+			$link = html::anchor($route->uri(array('class' => $class->class->name)), $class->class->name);
 
 			// Find the category, use the package if no category specified
 			if (isset($class->tags['category']))
@@ -267,7 +265,7 @@ class Kodoc {
 						if (strpos($text, '://') !== FALSE)
 						{
 							// Convert the lincense into a link
-							$text = HTML::anchor($text);
+							$text = html::anchor($text);
 						}
 					break;
 					case 'copyright':
@@ -280,18 +278,18 @@ class Kodoc {
 					case 'throws':
 						if (preg_match('/^(\w+)\W(.*)$/',$text,$matches))
 						{
-							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $matches[1])), $matches[1]).' '.$matches[2];
+							$text = html::anchor('docs/api/kohana/'.$matches[1], $matches[1]).' '.$matches[2];
 						}
 						else
 						{
-							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $text)), $text);
+							$text = html::anchor('docs/api/kohana/'.$text, $text);
 						}
 					break;
 					case 'uses':
 						if (preg_match('/^([a-z_]+)::([a-z_]+)$/i', $text, $matches))
 						{
 							// Make a class#method API link
-							$text = HTML::anchor(Route::get('docs/api')->uri(array('class' => $matches[1])).'#'.$matches[2], $text);
+							$text = html::anchor('docs/api/'.$matches[1].'#'.$matches[2], $text);
 						}
 					break;
 					// don't show @access lines, cause they are redundant
@@ -365,7 +363,7 @@ class Kodoc {
 			return TRUE;
 
 		// Get the package tags for this class (as an array)
-		$packages = Arr::get($class->tags,'package',Array('None'));
+		$packages = arr::get($class->tags,'package',Array('None'));
 
 		$show_this = FALSE;
 

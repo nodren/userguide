@@ -4,8 +4,7 @@
 	echo $doc->modifiers, $doc->method->name,
 	' ( ',
 	( $doc->params ) ? $doc->params_short() : '' ,
-	' ) ', 
-	'<small>declared by '.html::anchor($route->uri(array('class'=>$doc->method->getDeclaringClass()->getName())),$doc->method->getDeclaringClass()->getName()).'</small>' ?>
+	' ) ' ?>
 </h3>
 
 <div class="description">

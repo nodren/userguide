@@ -2,7 +2,7 @@
 	<?php echo $doc->modifiers, $doc->class->name ?>
 	<?php $parent = $doc->class; ?><br/>
 	<?php while ($parent = $parent->getParentClass()): ?>
-	<small>extends <?php echo HTML::anchor($route->uri(array('class' => $parent->name)), $parent->name) ?></small>
+	<small>extends <?php echo html::anchor('userguide/api/'.$parent->name, $parent->name) ?></small>
 	<?php endwhile ?>
 </h1>
 
@@ -11,15 +11,15 @@
 <?php if ($doc->tags) echo View::factory('userguide/api/tags')->set('tags', $doc->tags) ?>
 
 <?php if ($doc->constants): ?>
-<div class="constants">
-<h2 id="constants">Constants</h2>
-<dt>
-<?php foreach ($doc->constants as $name => $value): ?>
-<dt id="constant:<?php echo $name ?>"><?php echo $name ?></dt>
-<dd><?php echo $value ?></dd>
-<?php endforeach ?>
-</dt>
-</div>
+	<div class="constants">
+		<h2 id="constants">Constants</h2>
+		<dt>
+			<?php foreach ($doc->constants as $name => $value): ?>
+				<dt id="constant:<?php echo $name ?>"><?php echo $name ?></dt>
+				<dd><?php echo $value ?></dd>
+			<?php endforeach ?>
+		</dt>
+	</div>
 <?php endif ?>
 
 <?php if ($properties = $doc->properties()): ?>
