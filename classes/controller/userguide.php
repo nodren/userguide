@@ -58,8 +58,8 @@ class Controller_Userguide extends Controller_Template {
 			require Kohana::find_file('vendor', 'markdown/markdown');
 
 			// Set the base URL for links and images
-			Kodoc_Markdown::$base_url  = preg_replace('#//#','/',URL::site($this->guide->uri()).'/');
-			Kodoc_Markdown::$image_url = preg_replace('#//#','/',URL::site($this->media->uri()).'/');
+			Kodoc_Markdown::$base_url  = preg_replace('#//#','/',URL::site($this->guide->uri(array('module'=>$this->request->param('module')))).'/');
+			Kodoc_Markdown::$image_url = preg_replace('#//#','/',URL::site($this->media->uri(array('file'=>$this->request->param('module')))).'/');
 		}
 
 		parent::before();
