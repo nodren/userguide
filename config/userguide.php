@@ -8,9 +8,9 @@ return array
 	// Enable the API browser.  TRUE or FALSE
 	'api_browser' => TRUE,
 	
-	// Enable these packages in the API browser.  TRUE for all packages, or a string of comma seperated packages.
-	// Example: 'api_packages' => 'Kohana,Database,ORM',
-	'api_packages' => TRUE,
+	// Enable these packages in the API browser.  TRUE for all packages, or a string of comma seperated packages. You can use "None" for classes with no @package tag.
+	// Example: 'api_packages' => 'Kohana,Database,ORM,None',
+	'api_packages' =>TRUE,
 	
 	// Add the Kohana docs to the menu
 	'userguide' => array(

@@ -162,7 +162,17 @@ class Controller_Userguide extends Controller_Template {
 
 		if ($class)
 		{
-			$_class = Kodoc::factory($class);
+			try
+			{
+				$_class = Kodoc_Class::factory($class);
+			
+				if ( ! Kodoc::show_class($_class))
+					throw new Exception("That class is hidden");
+			}
+			catch (Exception $e)
+			{
+				return $this->error("API Reference: Class not found.");
+			}
 			
 			$this->template->title = $class;
 
@@ -176,15 +186,10 @@ class Controller_Userguide extends Controller_Template {
 		{
 			$this->template->title = __('Table of Contents');
 
-			$this->template->content = View::factory('userguide/api/toc')
-				->set('classes', Kodoc::class_methods())
-				->set('route', $this->request->route);
+			$this->template->content = Kodoc::menu();
 
 			$this->template->menu = Kodoc::menu();
 		}
-
-		// Attach the menu to the template
-		
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
