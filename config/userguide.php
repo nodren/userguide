@@ -5,7 +5,14 @@ return array
 	// Default the userguide language.
 	'lang'		=> 'en-us',
 	
-	// Add this userguide entry to kodoc
+	// Enable the API browser.  TRUE or FALSE
+	'api_browser' => TRUE,
+	
+	// Enable these packages in the API browser.  TRUE for all packages, or a string of comma seperated packages.
+	// Example: 'api_packages' => 'Kohana,Database,ORM',
+	'api_packages' => TRUE,
+	
+	// Add the Kohana docs to the menu
 	'userguide' => array(
 
         // This should be the path to your userguide pages

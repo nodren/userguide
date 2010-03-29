@@ -1,7 +1,9 @@
 <h1>Kodoc</h1>
 
+<?php if (Kohana::config('userguide.api_browser') === TRUE): ?>
 <h3>API Reference</h3>
 <p><strong><?php echo html::anchor(Route::get('docs/api')->uri(),'API Reference') ?></strong> - A reference of all classes that are enabled.</p>
+<?php endif ?>
 
 <h3>Modules</h3>
 <p>The following modules have userguide pages:</p>

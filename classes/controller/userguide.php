@@ -28,7 +28,6 @@ class Controller_Userguide extends Controller_Template {
 
 			// Grab the necessary routes
 			$this->media = Route::get('docs/media');
-			$this->api   = Route::get('docs/api');
 			$this->guide = Route::get('docs/guide');
 
 			if (isset($_GET['lang']))
