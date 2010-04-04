@@ -9,51 +9,29 @@
  */
 class Kodoc_Method_Param extends Kodoc {
 
-	/**
-	 * @var  ReflectionParameter  The ReflectionParameter for this property
-	 */
-	public $param;
-
-	/**
-	 * @var  string  the name of this var
-	 */
 	public $name;
-
-	/**
-	 * @var  string  The variable type, retreived from the comment
-	 */
 	public $type;
-
-	/**
-	 * @var  string  The default value of this param
-	 */
 	public $default;
-
-	/**
-	 * @var  string  Description of this parameter
-	 */
 	public $description;
-
-	public $byref = false;
-
-	public $optional = false;
+	public $byref = FALSE;
+	public $optional = FALSE;
 
 	public function __construct($method,$param)
 	{
-		$this->param = new ReflectionParameter($method, $param);
-		$this->name = $this->param->name;
+		$param = new ReflectionParameter($method, $param);
+		$this->name = $param->name;
 
-		if ($this->param->isDefaultValueAvailable())
+		if ($param->isDefaultValueAvailable())
 		{
-			$default = $this->param->getDefaultValue();
+			$default = $param->getDefaultValue();
 
 			if ($default === NULL)
 			{
-				$this->default .= 'NULL ';
+				$this->default .= 'NULL';
 			}
-			elseif ($default === FALSE)
+			elseif (is_bool($default))
 			{
-				$this->default .= 'FALSE ';
+				$this->default .= $default ? 'TRUE' : 'FALSE';
 			}
 			elseif (is_string($default))
 			{
@@ -65,45 +43,27 @@ class Kodoc_Method_Param extends Kodoc {
 			}
 		}
 
-		if ($this->param->isPassedByReference())
+		if ($param->isPassedByReference())
 		{
 			$this->byref = TRUE;
 		}
 
-		if ($this->param->isOptional())
+		if ($param->isOptional())
 		{
 			$this->optional = TRUE;
 		}
 	}
 
-	public function short()
+	/**
+	 * Allows serialization of only the object data. Reflection objects can't be
+	 * serialized.
+	 *
+	 * @return  array
+	 */
+	public function __sleep()
 	{
-		$out = '';
-		if ($this->byref)
-		{
-			$out .= '<small>byref</small> ';
-		}
-
-		if (isset($this->type))
-		{
-			$out .= '<small>'.$this->type.'</small> ';
-		}
-
-		if (isset($this->description))
-		{
-			$out .= '<span class="param" title="'.$this->description.'">$'.$this->name.'</span> ';
-		}
-		else
-		{
-			$out .= '$'.$this->name.' ';
-		}
-
-		if ($this->param->isDefaultValueAvailable())
-		{
-			$out .= '<small>= '.$this->default.'</small> ';
-		}
-
-		return $out;
+		// Store only information about the object
+		return array('optional', 'byref', 'default', 'name', 'type', 'description');
 	}
 
 } // End Kodoc_Method_Param

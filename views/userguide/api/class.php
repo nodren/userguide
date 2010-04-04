@@ -1,44 +1,47 @@
 <h1>
-	<?php echo $doc->modifiers, $doc->class->name ?>
-	<?php $parent = $doc->class; ?><br/>
-	<?php while ($parent = $parent->getParentClass()): ?>
-	<small>extends <?php echo html::anchor('userguide/api/'.$parent->name, $parent->name) ?></small>
-	<?php endwhile ?>
+	<?php echo $class->modifiers, $class->name ?>
+	<?php foreach ($class->parents as $parent): ?>
+		<small>extends <?php echo html::anchor('userguide/api/'.$parent->package.'/'.$parent->name, $parent->name) ?></small>
+	<?php endforeach; ?>
 </h1>
-<?php echo $doc->description ?>
+<?php echo $class->description ?>
 
-<?php if ($doc->tags) echo View::factory('userguide/api/tags')->set('tags', $doc->tags) ?>
+<?php if ($class->tags) echo View::factory('userguide/api/tags')->set('tags', $class->tags) ?>
 
-<?php if ($doc->constants): ?>
+<?php if ($class->constants): ?>
+	<h2 id="constants">Constants</h2>
 	<div class="constants">
-		<h2 id="constants">Constants</h2>
-		<dt>
-			<?php foreach ($doc->constants as $name => $value): ?>
-				<dt id="constant:<?php echo $name ?>"><?php echo $name ?></dt>
-				<dd><?php echo $value ?></dd>
-			<?php endforeach ?>
-		</dt>
+		<?php foreach ($class->constants as $name => $value): ?>
+			<div class="constant">
+				<h3 id="constant:<?php echo $name ?>"><?php echo $name ?></h3>
+				<h5>Value:</h5>
+				<?php echo $value ?>
+			</div>
+		<?php endforeach ?>
 	</div>
 <?php endif ?>
 
-<?php if ($properties = $doc->properties()): ?>
-<h2 id="properties">Properties</h2>
-<div class="properties">
-<dt>
-<?php foreach ($properties as $prop): ?>
-<dt id="property:<?php echo $prop->property->name ?>"><?php echo $prop->modifiers ?> <code><?php echo $prop->type ?></code> <?php echo $prop->property->name ?></dt>
-<dd><?php echo $prop->description ?></dd>
-<dd><?php echo $prop->value ?></dd>
-<?php endforeach ?>
-</dt>
-</div>
+<?php if ($class->properties): ?>
+	<h2 id="properties">Properties</h2>
+	<div class="properties">
+		<?php foreach ($class->properties as $prop): ?>
+			<div class="property">
+				<h3 id="property:<?php echo $prop->property->name ?>">
+					<?php echo $prop->modifiers ?><?php echo $prop->property->name ?>
+				</h3>
+				<?php echo $prop->description ?>
+				<h5>Value:</h5>
+				<?php echo $prop->value ?>
+			</div>
+		<?php endforeach ?>
+	</div>
 <?php endif ?>
 
-<?php if ($methods = $doc->methods()): ?>
+<?php if ($class->methods): ?>
 	<h2 id="methods">Methods</h2>
 	<div class="methods">
-		<?php foreach ($methods as $method): ?>
-			<?php echo View::factory('userguide/api/method', array('doc' => $method)) ?>
+		<?php foreach ($class->methods as $method): ?>
+			<?php echo View::factory('userguide/api/method', array('method' => $method)) ?>
 		<?php endforeach ?>
 	</div>
 <?php endif ?>
@@ -54,7 +57,7 @@
    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
   })();
 </script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=kohana2xdocumentation">comments powered by Disqus.</a></noscript>
+<noscript><p>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=kohana2xdocumentation">comments powered by Disqus.</a></p></noscript>
 
 <script type="text/javascript">
 //<![CDATA[

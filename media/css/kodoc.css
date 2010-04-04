@@ -80,8 +80,8 @@ table td { background: #f4f4f4; }
 		#kodoc-content div.toc li { margin: 0; padding: 0; }
 	#kodoc-content div.toc h3 { margin: 0; padding: 0.2em 1em; font-size: 1em; color: #eee; background: #111; }
 #kodoc-content div.method,
-#kodoc-content div.properties,
-#kodoc-content div.constants { margin-bottom: 1em; border: solid 1px #E3EDC4; padding: 8px; }
+#kodoc-content div.property,
+#kodoc-content div.constant { margin-bottom: 1em; border: solid 1px #E3EDC4; padding: 8px; }
 	#kodoc-content div.method h3 .param { font-weight: normal; cursor: help; border-bottom:1px dashed #666666;}
 	#kodoc-content div.method h3 abbr.param { text-transform: none; font-size: 1em; }
 #kodoc-content p.note { display: block; padding: 0.4em 0.6em; background: #eee; color: #444; font-size: 0.9em; border: solid 1px #eee; }

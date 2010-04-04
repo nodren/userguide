@@ -9,13 +9,21 @@ class Userguide_Controller extends Template_Controller {
 
 	public $template = 'userguide/template';
 
+	protected $cache = FALSE;
+
 	public function __construct()
 	{
 		parent::__construct();
-
+		
 		// Create a custom 404 handler for this controller
 		Event::clear('system.404', array('Kohana_404_Exception', 'trigger'));
 		Event::add('system.404', array($this, 'error'));
+
+		// Do we have anything cached?
+		if (Kohana::config('userguide.cache'))
+		{
+			$this->cache = Cache::instance();
+		}
 
 		if (URI::instance()->segment(2) === 'media')
 		{
@@ -121,31 +129,6 @@ class Userguide_Controller extends Template_Controller {
 
 	public function api($package = NULL, $class_name = NULL)
 	{
-		if ($class_name)
-		{
-			try
-			{
-				$class = Kodoc_Class::factory($class_name);
-			}
-			catch (Exception $e)
-			{
-				Event::run('system.404');
-			}
-
-			$this->template->title = $class_name;
-
-			$this->template->content = View::factory('userguide/api/class', array('doc' => $class));
-			$this->template->menu = View::factory('userguide/api/menu', array('doc' => $class));
-		}
-		else
-		{
-			$this->template->title = __('API Reference');
-
-			$this->template->content = View::factory('userguide/api/toc', array('toc' => Kodoc::menu()));
-
-			$this->template->menu = $this->page('kohana/menu');
-		}
-
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
 
@@ -153,6 +136,46 @@ class Userguide_Controller extends Template_Controller {
 		$breadcrumb = array();
 		$breadcrumb['userguide'] = 'User Guide';
 		$breadcrumb['userguide/kohana'] = 'Kohana';
+
+		if ($class_name)
+		{
+			// Do we have anything cached?
+			if ($this->cache AND ($class = $this->cache->get('kodoc_class_'.$class_name)) !== NULL)
+			{
+				// Nothing to do, it's cached.
+			}
+			else
+			{
+				try
+				{
+					$class = Kodoc_Class::factory($class_name);
+				}
+				catch (Exception $e)
+				{
+					Event::run('system.404');
+				}
+
+				if ($this->cache)
+				{
+					$this->cache->set('kodoc_class_'.$class_name, $class);
+				}
+			}
+
+			$breadcrumb['userguide/api/kohana'] = 'API Reference';
+			$this->template->title = $class_name;
+
+			$this->template->content = View::factory('userguide/api/class', array('class' => $class));
+			$this->template->menu = View::factory('userguide/api/menu', array('class' => $class));
+		}
+		else
+		{
+			$this->template->title = 'API Reference';
+
+			$this->template->content = View::factory('userguide/api/toc', array('toc' => Kodoc::menu()));
+
+			$this->template->menu = $this->page('kohana/menu');
+		}
+
 		$breadcrumb[] = $this->template->title;
 	}
 

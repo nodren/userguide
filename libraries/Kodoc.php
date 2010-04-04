@@ -21,12 +21,6 @@ class Kodoc {
 		if ( ! empty(Kodoc::$packages))
 			return Kodoc::$packages;
 
-		$cache = Cache::instance();
-
-		// Do we have anything cached?
-		if (Kohana::config('userguide.cache') AND $packages = $cache->get('kodoc_packages'))
-			return Kodoc::$packages = $packages;
-
 		$files = Kodoc::classes();
 
 		$packages = array();
@@ -63,12 +57,12 @@ class Kodoc {
 					{
 						foreach ($class->tags['package'] as $package)
 						{
-							$packages[strtolower($package)][$group][$class->class->name] = $class->class->name;
+							$packages[strtolower($package)][$group][$class->name] = $class->name;
 						}
 					}
 					else
 					{
-						$packages['unknown'][$group][$class->class->name] = $class->class->name;
+						$packages['unknown'][$group][$class->name] = $class->name;
 					}
 				}
 			}
@@ -82,12 +76,6 @@ class Kodoc {
 				ksort($group);
 			}
 			ksort($package);
-		}
-
-		// Cache the results
-		if (Kohana::config('userguide.cache'))
-		{
-			$cache->set('kodoc_packages', $packages);
 		}
 
 		return Kodoc::$packages = $packages;

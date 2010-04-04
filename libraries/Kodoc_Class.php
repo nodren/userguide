@@ -33,21 +33,52 @@ class Kodoc_Class extends Kodoc {
 	 * @var  array  array of this classes constants
 	 */
 	public $constants = array();
+	public $properties = array();
+	public $methods = array();
 
-	public function __construct($class)
+	public function __construct($class_name)
 	{
-		$this->class = $parent = new ReflectionClass($class);
+		$class = $parent = new ReflectionClass($class_name);
 
-		if ($modifiers = $this->class->getModifiers())
+		$this->name = $class->name;
+
+		$this->parents = array();
+
+		if ($modifiers = $class->getModifiers())
 		{
 			$this->modifiers = '<small>'.implode(' ', Reflection::getModifierNames($modifiers)).'</small> ';
 		}
 
-		if ($constants = $this->class->getConstants())
+		if ($constants = $class->getConstants())
 		{
 			foreach ($constants as $name => $value)
 			{
 				$this->constants[$name] = Kohana::debug($value);
+			}
+		}
+
+		if ($props = $class->getProperties())
+		{
+			foreach ($props as $key => $property)
+			{
+				// Only show public properties, because Reflection can't get the private ones
+				if ($property->isPublic())
+				{
+					$this->properties[$key] = new Kodoc_Property($class->name, $property->name);
+				}
+			}
+		}
+
+		if ($methods = $class->getMethods())
+		{
+			foreach ($methods as $key => $method)
+			{
+				// Only show methods declared in this class
+				$declaring_class = str_replace('_Core', '', $method->getDeclaringClass()->name);
+				if ($declaring_class === $class->name)
+				{
+					$this->methods[$key] = new Kodoc_Method($class->name, $method->name);
+				}
 			}
 		}
 
@@ -64,44 +95,16 @@ class Kodoc_Class extends Kodoc {
 		list($this->description, $this->tags) = Kodoc::parse($comment);
 	}
 
-	public function properties()
+	/**
+	 * Allows serialization of only the object data. Reflection objects can't be
+	 * serialized.
+	 *
+	 * @return  array
+	 */
+	public function __sleep()
 	{
-		$props = $this->class->getProperties();
-
-		sort($props);
-
-		foreach ($props as $key => $property)
-		{
-			// Only show public properties, because Reflection can't get the private ones
-			if ($property->isPublic())
-			{
-				$props[$key] = new Kodoc_Property($this->class->name, $property->name);
-			}
-			else
-			{
-				unset($props[$key]);
-			}
-		}
-
-		return $props;
-	}
-
-	public function methods()
-	{
-		$all_methods = $this->class->getMethods();
-
-		$methods = array();
-
-		foreach ($all_methods as $key => $method)
-		{
-			// Only show methods declared in this class
-			$declaring_class = str_replace('_Core', '', $method->getDeclaringClass()->name);
-			if ($declaring_class === $this->class->name)
-			{
-				$methods[$key] = new Kodoc_Method($this->class->name, $method->name);
-			}
-		}
-		return $methods;
+		// Store only information about the object
+		return array('name', 'modifiers', 'constants', 'description', 'tags', 'properties', 'methods', 'parents');
 	}
 
 } // End Kodac_Class
