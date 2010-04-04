@@ -27,7 +27,7 @@
 		<?php foreach ($class->properties as $prop): ?>
 			<div class="property">
 				<h3 id="property:<?php echo $prop->property->name ?>">
-					<?php echo $prop->modifiers ?><?php echo $prop->property->name ?>
+					<?php echo $prop->modifiers ?>$<?php echo $prop->property->name ?>
 				</h3>
 				<?php echo $prop->description ?>
 				<h5>Value:</h5>

@@ -14,7 +14,7 @@ class Userguide_Controller extends Template_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		// Create a custom 404 handler for this controller
 		Event::clear('system.404', array('Kohana_404_Exception', 'trigger'));
 		Event::add('system.404', array($this, 'error'));
@@ -89,18 +89,12 @@ class Userguide_Controller extends Template_Controller {
 		// Trim trailing slashes, to ensure breadcrumbs work
 		$page = trim($module.'/'.$name, '/');
 
-		if ( ! ($file = $this->file($page)))
-		{
-			Event::run('system.404');
-		}
-
 		$this->template->title = $this->title($page);
 
-		$this->template->content = Markdown(file_get_contents($file));
+		$this->template->content = $this->file($page);
 
 		// Find this modules menu file and send it to the template
-		$menu = $this->file($module.'/menu');
-		$this->template->menu = Markdown(file_get_contents($menu));
+		$this->template->menu = $this->file($module.'/menu');
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $breadcrumb);
@@ -135,7 +129,7 @@ class Userguide_Controller extends Template_Controller {
 		// Add the breadcrumb
 		$breadcrumb = array();
 		$breadcrumb['userguide'] = 'User Guide';
-		$breadcrumb['userguide/kohana'] = 'Kohana';
+		$breadcrumb['userguide/guide/kohana'] = 'Kohana';
 
 		if ($class_name)
 		{
@@ -177,6 +171,30 @@ class Userguide_Controller extends Template_Controller {
 		}
 
 		$breadcrumb[] = $this->template->title;
+	}
+
+	public function config($package = NULL, $file = NULL)
+	{
+		if ($file === NULL)
+		{
+			url::redirect('userguide/api/'.$package);
+		}
+
+		$config = Kodoc::parse_config($file);
+		$this->template->title = $file;
+		$this->template->content = View::factory('userguide/api/config');
+		$this->template->content->config = $config;
+		$this->template->menu = Kodoc::menu();
+
+		// Bind the breadcrumb
+		$this->template->bind('breadcrumb', $breadcrumb);
+
+		// Add the breadcrumb
+				// Add the breadcrumb
+		$breadcrumb = array();
+		$breadcrumb['userguide'] = 'User Guide';
+		$breadcrumb['userguide/guide/kohana'] = 'Kohana';
+		$breadcrumb['userguide/api/kohana'] = __('API Reference');
 	}
 
 	public function media($type = NULL, $file = NULL)

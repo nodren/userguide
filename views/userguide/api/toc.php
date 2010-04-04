@@ -9,7 +9,7 @@
 					<?php if ($c === 1): ?>
 						<ul>
 					<?php endif; ?>
-						<li><?php echo html::anchor('userguide/api/'.$package.'/'.$name, $name) ?></li>
+						<li><?php echo html::anchor('userguide/'.($group === 'configs' ? 'config' : 'api').'/'.$package.'/'.$name, $name) ?></li>
 					<?php if ($c == $per_row OR $i == $total): $c = 0; ?>
 						</ul>
 					<?php endif; ?>
