@@ -1,6 +1,5 @@
 $(document).ready(function()
 {
-
 	// Syntax highlighter
 	$('pre code').each(function(){
 		$(this).addClass('brush: php');
@@ -10,44 +9,6 @@ $(document).ready(function()
 	SyntaxHighlighter.defaults.toolbar = false;
 	SyntaxHighlighter.defaults.gutter = false;
 	SyntaxHighlighter.all();
-
-	// Striped tables
-	$('#kodoc-content tbody tr:odd').addClass('alt');
-
-	// Collapsable categories
-	$('#kodoc-menu li:has(ul), #kodoc-menu li:has(ol)').each(function()
-	{
-		var link = $(this).find(':first');
-		var menu = $(this).find('ul:first,ol:first');
-
-		link.prepend('<div class="toggler"></div>');
-		link.addClass('section');
-
-		var open  = function()
-		{
-			menu.slideDown();
-			link.addClass('section-active');
-		};
-
-		var close = function()
-		{
-			menu.slideUp();
-			link.removeClass('section-active');
-		};
-
-		if (menu.find('a[href="'+ window.location.pathname +'"]').length || $(this).find('a[href="'+ window.location.pathname +'"]').length)
-		{
-			// Currently active menu
-			link.find('.toggler:first').toggle(close, open);
-			link.addClass('section-active');
-		}
-		else
-		{
-			menu.hide();
-			link.find('.toggler:first').toggle(open, close);
-			link.removeClass('section-active');
-		}
-	});
 
 	// Show source links
 	$('#kodoc-content .method-source').each(function(){

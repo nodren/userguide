@@ -25,7 +25,7 @@ class Userguide_Controller extends Template_Controller {
 			$this->cache = Cache::instance();
 		}
 
-		if (URI::instance()->segment(2) === 'media')
+		if (Router::$method === 'media')
 		{
 			// Do not template media files
 			$this->auto_render = FALSE;
@@ -35,10 +35,6 @@ class Userguide_Controller extends Template_Controller {
 			// Disable eAccelerator, it messes with	the ReflectionClass->getDocComments() calls
             ini_set('eaccelerator.enable', 0);
 
-			// Grab the necessary routes
-			$this->media = url::site();
-			$this->guide = url::site();
-
 			// Use customized Markdown parser
 			define('MARKDOWN_PARSER_CLASS', 'Kodoc_Markdown');
 
@@ -46,8 +42,19 @@ class Userguide_Controller extends Template_Controller {
 			require Kohana::find_file('vendor', 'markdown', TRUE);
 
 			// Set the base URL for links and images
-			Kodoc_Markdown::$base_url  = preg_replace('#//#', '/', url::site().'/');
-			Kodoc_Markdown::$image_url = preg_replace('#//#', '/', url::site().'/');
+			Kodoc_Markdown::$base_url  = url::site('userguide').'/';
+			Kodoc_Markdown::$image_url = url::site('userguide/media').'/';
+		}
+
+		// Bind the breadcrumb
+		$this->template->bind('breadcrumb', $this->breadcrumb);
+
+		// Add the breadcrumb
+		$this->breadcrumb = array();
+		$this->breadcrumb['userguide'] = 'User Guide';
+		if ($this->package = URI::instance()->segment(3))
+		{
+			$this->breadcrumb['userguide/guide/'.$this->package] = ucfirst($this->package);
 		}
 	}
 
@@ -55,7 +62,6 @@ class Userguide_Controller extends Template_Controller {
 	public function index()
 	{
 		$this->template->title = "Userguide";
-		$this->template->breadcrumb = array('User Guide');
 		$this->template->content = View::factory('userguide/index', array('modules' => Kohana::config('userguide.guides')));
 		$this->template->menu = View::factory('userguide/menu', array('modules' => Kohana::config('userguide.guides')));
 	}
@@ -66,71 +72,31 @@ class Userguide_Controller extends Template_Controller {
 		$this->template->content = View::factory('userguide/error', array('message' => 'Page not found'));
 
 		// If we are in a module and that module has a menu, show that, otherwise use the index page menu
-		if ($module = URI::instance()->segment(2) AND $config = Kohana::config("userguide.guides.$module"))
+		if ($package = URI::instance()->segment(2) AND Kohana::config("userguide.guides.$package"))
 		{
-			$menu = $this->file($config['menu']);
-			$this->template->menu = Markdown(file_get_contents($menu));
-			$this->template->breadcrumb = array
-			(
-				'userguide'          => 'User Guide',
-				'userguide/'.key($module) => $module,
-				'Error'
-			);
+			$this->template->menu = $this->page($package.'/menu');
+			$this->breadcrumb[] = 'Error';
 		}
 		else
 		{
 			$this->template->menu = View::factory('userguide/menu', array('modules' => Kohana::config('userguide.userguide')));
-			$this->template->breadcrumb = array('userguide' => 'User Guide', 'Error');
 		}
 	}
 
-	public function guide($module = NULL, $name = NULL)
+	public function guide($module = NULL, $page = NULL)
 	{
-		// Trim trailing slashes, to ensure breadcrumbs work
-		$page = trim($module.'/'.$name, '/');
+		$this->template->title = ucfirst($page);
 
-		$this->template->title = $this->title($page);
+		$file = implode('/', URI::instance()->segment_array(2));
 
-		$this->template->content = $this->file($page);
+		$this->template->content = $this->markdown($file);
 
 		// Find this modules menu file and send it to the template
-		$this->template->menu = $this->file($module.'/menu');
-
-		// Bind the breadcrumb
-		$this->template->bind('breadcrumb', $breadcrumb);
-
-		// Begin building the breadcrumbs backwards
-		$breadcrumb = array();
-
-		// Add the page name
-		$breadcrumb[] = $this->template->title;
-
-		// Find all the parents
-		$last = $page;
-		$current = null;
-		while ($last !== $current = preg_replace('~/[^/]+$~','',$last))
-		{
-			$breadcrumb[$this->guide->uri().'/'.$current] = $this->title($current);
-			$last = $current;
-		}
-
-		// Add the userguide root link
-		$breadcrumb['userguide'] = __('User Guide');
-
-		// Now reverse the array
-		$breadcrumb = array_reverse($breadcrumb);
+		$this->template->menu = $this->markdown($module.'/menu', NULL);
 	}
 
 	public function api($package = NULL, $class_name = NULL)
 	{
-		// Bind the breadcrumb
-		$this->template->bind('breadcrumb', $breadcrumb);
-
-		// Add the breadcrumb
-		$breadcrumb = array();
-		$breadcrumb['userguide'] = 'User Guide';
-		$breadcrumb['userguide/guide/kohana'] = 'Kohana';
-
 		if ($class_name)
 		{
 			// Do we have anything cached?
@@ -155,7 +121,7 @@ class Userguide_Controller extends Template_Controller {
 				}
 			}
 
-			$breadcrumb['userguide/api/kohana'] = 'API Reference';
+			$this->breadcrumb['userguide/api/kohana'] = 'API Reference';
 			$this->template->title = $class_name;
 
 			$this->template->content = View::factory('userguide/api/class', array('class' => $class));
@@ -165,36 +131,47 @@ class Userguide_Controller extends Template_Controller {
 		{
 			$this->template->title = 'API Reference';
 
-			$this->template->content = View::factory('userguide/api/toc', array('toc' => Kodoc::menu()));
+			$this->template->content = View::factory('userguide/api/toc', array('toc' => Kodoc::packages()));
 
-			$this->template->menu = $this->page('kohana/menu');
+			$this->template->menu = $this->markdown('kohana/menu');
 		}
 
 		$breadcrumb[] = $this->template->title;
 	}
 
-	public function config($package = NULL, $file = NULL)
+	public function config($package = NULL, $config_name = NULL)
 	{
-		if ($file === NULL)
+		if ($config_name)
 		{
-			url::redirect('userguide/api/'.$package);
+			// Do we have anything cached?
+			if ($this->cache AND ($config = $this->cache->get('kodoc_config_'.$config_name)) !== NULL)
+			{
+				// Nothing to do, it's cached.
+			}
+			else
+			{
+				try
+				{
+					$config = new Kodoc_Config($config_name);
+				}
+				catch (Exception $e)
+				{
+					Event::run('system.404');
+				}
+
+				if ($this->cache)
+				{
+					$this->cache->set('kodoc_config_'.$config_name, $config);
+				}
+			}
 		}
 
-		$config = Kodoc::parse_config($file);
-		$this->template->title = $file;
-		$this->template->content = View::factory('userguide/api/config');
-		$this->template->content->config = $config;
-		$this->template->menu = Kodoc::menu();
+		$this->template->title = $config_name;
+		$this->template->content = View::factory('userguide/api/config', array('config' => $config));
+		$this->template->menu = View::factory('userguide/api/config_menu', array('config' => $config));
 
-		// Bind the breadcrumb
-		$this->template->bind('breadcrumb', $breadcrumb);
-
-		// Add the breadcrumb
-				// Add the breadcrumb
-		$breadcrumb = array();
-		$breadcrumb['userguide'] = 'User Guide';
-		$breadcrumb['userguide/guide/kohana'] = 'Kohana';
-		$breadcrumb['userguide/api/kohana'] = __('API Reference');
+		$this->breadcrumb['userguide/api/kohana'] = 'API Reference';
+		$this->breadcrumb[] = $config_name.' config';
 	}
 
 	public function media($type = NULL, $file = NULL)
@@ -250,11 +227,11 @@ class Userguide_Controller extends Template_Controller {
 	}
 
 	/**
-	 * Find a userguide page
-	 * @param   string   the url of the page
-	 * @return  string   the name of the file
+	 * Render markdown page
+	 * @param   string   Name of page
+	 * @return  string   Rendered markdown content
 	 */
-	private function page($page)
+	protected function markdown($page, $show_404 = TRUE)
 	{
 		if ( ! ($file = Kohana::find_file('guide', $page, FALSE, 'md')))
 		{
@@ -262,22 +239,15 @@ class Userguide_Controller extends Template_Controller {
 			$file = Kohana::find_file('guide', $page.'/index', FALSE, 'md');
 		}
 
-		if ( ! $file)
+		if ( ! $file AND $show_404 === TRUE)
 		{
 			Event::run('system.404');
 		}
 
-		return Markdown(file_get_contents($file));
-	}
-
-	/**
-	 * Find the title of a page in the menu file by looking for the url. Assuming we are looking for "url" and the following is in the menu file: [Name](url) it will return "Name".
-	 * @param  string   the url to find the title of
-	 * @return string   the title of the page
-	 */
-	public function title($page)
-	{
-		return $page;
+		if ( ! $file)
+			return $show_404;
+		else
+			return Markdown(file_get_contents($file));
 	}
 
 } // End Userguide Controller

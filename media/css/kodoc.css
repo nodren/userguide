@@ -102,58 +102,8 @@ table td { background: #f4f4f4; }
 
 	/* Header for constants, properties, methods headers */
 	#kodoc-menu #class-menu h4 { font-size: 1.2em; margin: 0.6em 0.4em 0; padding: .3em .6em .2em; background:#F1F8DB; color:#245B35; }
-	#kodoc-menu #class-menu ul { margin-left:10px; margin-bottom:0.3em; }
-	#kodoc-menu #class-menu ul li { padding: 0.1em 0; }
-	#kodoc-menu #class-menu ul a { padding-left:0; background:none; }
-
-	/* Menus */
-	#kodoc-menu ol,
-	#kodoc-menu ul,
-	#kodoc-menu ol ol,
-	#kodoc-menu ul ul,
-	#kodoc-menu ul ol,
-	#kodoc-menu ol ul { margin:0; padding:0; list-style:none; }
-
-	#kodoc-menu ol ol,
-	#kodoc-menu ul ul,
-	#kodoc-menu ul ol,
-	#kodoc-menu ol ul { margin-left:14px }
-
-	/* Top level menus getting padding on top and bottom */
-	#kodoc-menu>ol,
-	#kodoc-menu>ul { padding-top: 0.6em; padding-bottom:0.6em; padding-left:3px; }
-
-	/* List Items */
-	#kodoc-menu li { margin: 0; display:block; position:relative; }
-
-	/* Links */
-	#kodoc-menu li a, #kodoc-menu li strong {
-		padding-left: 14px;
-		background:transparent url('../img/arrow.png') -40px 0 no-repeat;
-	}
-
-	/* Expandable section headers */
-	#kodoc-menu .section {
-		display: block;
-		padding: 0.1em 0 0 14px;
-		font-weight: bold;
-		color: #00262F;
-		background-position: -20px -20px;
-	}
-
-	#kodoc-menu .section-active {
-		background-position: 0 -40px;
-	}
-
-	/* Toggle button */
-	#kodoc-menu .section .toggler {
-		position:absolute;
-		top:0;
-		left:0;
-		width:14px;
-		height:19px;
-		cursor:pointer;
-	}
+	#kodoc-menu #class-menu ul { margin: 10px; list-style: none; }
+	#kodoc-menu  ul { margin: 10px; list-style: none; }
 
 #footer p { font-size: 0.8em; text-transform: uppercase; }
 #footer .copyright { text-align: right; }
