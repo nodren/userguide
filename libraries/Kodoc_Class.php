@@ -84,7 +84,8 @@ class Kodoc_Class extends Kodoc {
 
 		do
 		{
-			if ($comment = $parent->getDocComment())
+			// Skip the comments in the bootstrap file
+			if ($comment = $parent->getDocComment() AND basename($parent->getFileName()) !== 'Bootstrap.php')
 			{
 				// Found a description for this class
 				break;

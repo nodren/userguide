@@ -30,21 +30,19 @@ class Userguide_Controller extends Template_Controller {
 			// Do not template media files
 			$this->auto_render = FALSE;
 		}
-		else
-		{
-			// Disable eAccelerator, it messes with	the ReflectionClass->getDocComments() calls
-            ini_set('eaccelerator.enable', 0);
 
-			// Use customized Markdown parser
-			define('MARKDOWN_PARSER_CLASS', 'Kodoc_Markdown');
+		// Use customized Markdown parser
+		define('MARKDOWN_PARSER_CLASS', 'Kodoc_Markdown');
 
-			// Load Markdown support
-			require Kohana::find_file('vendor', 'markdown', TRUE);
+		// Load Markdown support
+		require Kohana::find_file('vendor', 'markdown', TRUE);
 
-			// Set the base URL for links and images
-			Kodoc_Markdown::$base_url  = url::site('userguide').'/';
-			Kodoc_Markdown::$image_url = url::site('userguide/media').'/';
-		}
+		// Set the base URL for links and images
+		Kodoc_Markdown::$base_url  = url::site('userguide').'/';
+		Kodoc_Markdown::$image_url = url::site('userguide/media').'/';
+
+		// Disable eAccelerator, it messes with	the ReflectionClass->getDocComments() calls
+		ini_set('eaccelerator.enable', 0);
 
 		// Bind the breadcrumb
 		$this->template->bind('breadcrumb', $this->breadcrumb);
@@ -68,19 +66,24 @@ class Userguide_Controller extends Template_Controller {
 
 	public function error()
 	{
+		$this->auto_render = TRUE;
 		$this->template->title = "Userguide - Error";
 		$this->template->content = View::factory('userguide/error', array('message' => 'Page not found'));
 
 		// If we are in a module and that module has a menu, show that, otherwise use the index page menu
-		if ($package = URI::instance()->segment(2) AND Kohana::config("userguide.guides.$package"))
+		if ($package = URI::instance()->segment(3) AND Kohana::config("userguide.guides.$package"))
 		{
-			$this->template->menu = $this->page($package.'/menu');
+			$this->template->menu = $this->markdown($package.'/menu', NULL);
 			$this->breadcrumb[] = 'Error';
 		}
 		else
 		{
 			$this->template->menu = View::factory('userguide/menu', array('modules' => Kohana::config('userguide.userguide')));
 		}
+
+		header('HTTP/1.1 404 File Not Found');
+		$this->_render();
+		exit();
 	}
 
 	public function guide($module = NULL, $page = NULL)
@@ -177,7 +180,7 @@ class Userguide_Controller extends Template_Controller {
 	public function media($type = NULL, $file = NULL)
 	{
 		// Get the file path from the request
-		$file = $type.'/'.$file;
+		$file = implode('/', URI::instance()->segment_array(2));
 
 		// Find the file extension
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
@@ -217,6 +220,8 @@ class Userguide_Controller extends Template_Controller {
 			$this->template->scripts = array
 			(
 				'userguide/media/js/jquery-1.3.2.min.js',
+				'userguide/media/js/jquery.coda-slider-2.0.js',
+				'userguide/media/js/jquery.easing.1.3.js',
 				'userguide/media/js/kodoc.js',
 				'userguide/media/js/shCore.js',
 				'userguide/media/js/shBrushPhp.js',

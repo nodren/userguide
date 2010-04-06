@@ -19,6 +19,8 @@ class Kodoc_Markdown extends MarkdownExtra_Parser {
 	 */
 	public static $image_url = '';
 
+	protected $header_ids = array();
+
 	public function __construct()
 	{
 		// doImage is 10, add image url just before
@@ -33,40 +35,39 @@ class Kodoc_Markdown extends MarkdownExtra_Parser {
 		// Add note spans last
 		$this->span_gamut['doNotes'] = 100;
 
-		// Parse Kohana view inclusions at the very end
-		$this->document_gamut['doIncludeViews'] = 100;
+		// Add toc
+		$this->span_gamut['doTOC'] = 100;
 
 		// PHP4 makes me sad.
 		parent::MarkdownExtra_Parser();
 	}
 
-	public function doIncludeViews($text)
+	public function _doHeaders_callback_setext($matches)
 	{
-		if (preg_match_all('/{{(\S+?)}}/m', $text, $matches, PREG_SET_ORDER))
+		if (isset($matches[2]))
 		{
-			$replace = array();
-
-			foreach ($matches as $set)
-			{
-				list($search, $view) = $set;
-
-				try
-				{
-					$replace[$search] = View::factory($view)->render();
-				}
-				catch (Exception $e)
-				{
-					ob_start();
-
-					// Capture the exception handler output and insert it instead
-					Kohana::exception_handler($e);
-
-					$replace[$search] = ob_get_clean();
-				}
-			}
-
-			$text = strtr($text, $replace);
+			$this->header_ids[] = $matches[2];
 		}
+		return parent::_doHeaders_callback_setext($matches);
+	}
+
+	public function _doHeaders_callback_atx($matches)
+	{
+		if (isset($matches[3]))
+		{
+			$this->header_ids[] = $matches[3];
+		}
+		return parent::_doHeaders_callback_atx($matches);
+	}
+
+	public function doTOC($text)
+	{
+		/**if ( ! preg_match('/^{{toc = (.+)}}$/', $text, $match))
+		{
+			echo Kohana::debug($match);
+			die;
+			$text = strtr($text, array($match[0], Kohana::debug($this->header_ids)));
+		}**/
 
 		return $text;
 	}
