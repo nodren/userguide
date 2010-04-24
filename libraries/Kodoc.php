@@ -15,7 +15,7 @@ class Kodoc {
 		return new Kodoc_Class($class);
 	}
 
-	protected static function packages()
+	public static function packages()
 	{
 		// If we already found the packages just return them
 		if ( ! empty(Kodoc::$packages))
