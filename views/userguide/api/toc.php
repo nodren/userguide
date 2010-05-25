@@ -1,7 +1,9 @@
 <h1><?php echo __('Available Classes'); $package = 'kohana'; ?></h1>
 
+<?php foreach ($toc as $package => $groups):?>
+<h2><?php echo $package; ?></h2>
 <div id="toc">
-	<?php foreach ($toc['kohana'] as $group => $list): $total = count($list); $per_row = ceil($total / 3) ?>
+	<?php foreach ($groups as $group => $list): $total = count($list); $per_row = ceil($total / 3) ?>
 		<?php if (count($toc) > 0): $i = $c = 0; ?>
 			<div class="toc" style="overflow: auto">
 				<h5><?php echo ucfirst($group) ?></h5>
@@ -20,3 +22,4 @@
 		<?php endif; ?>
 	<?php endforeach; ?>
 </div>
+<?php endforeach;?>

@@ -7,7 +7,8 @@
  * @copyright  (c) 2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-class Kodoc_Class extends Kodoc {
+class Kodoc_Class extends Kodoc
+{
 
 	/**
 	 * @var  ReflectionClass The ReflectionClass for this class
@@ -38,8 +39,12 @@ class Kodoc_Class extends Kodoc {
 
 	public function __construct($class_name)
 	{
+		$class_prefix = Kohana::config('core.extension_prefix');
+		if (substr($class_name,0,strlen($class_prefix)) === $class_prefix)
+		{
+			$class_name = substr($class_name,strlen($class_prefix));
+		}
 		$class = $parent = new ReflectionClass($class_name);
-
 		$this->name = $class->name;
 
 		$this->parents = array();
